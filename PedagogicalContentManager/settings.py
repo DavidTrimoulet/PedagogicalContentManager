@@ -31,7 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'competency_repository.apps.CompetencyRepositoryConfig',
+    'rest_framework',
+    'app_manager.apps.CompetencyRepositoryConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

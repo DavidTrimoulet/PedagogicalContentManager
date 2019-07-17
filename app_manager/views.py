@@ -3,6 +3,18 @@ from django.http import HttpResponse
 
 # Create your views here.
 
+from rest_framework import generics
+from .models import BloomVerb
+from .serializers import BloomVerbSerializer
+
+
+class BloomVerbView(generics.ListAPIView):
+    """
+    Provides a get method handler.
+    """
+    queryset = BloomVerb.objects.all()
+    serializer_class = BloomVerbSerializer
+
 
 def index(request):
     return HttpResponse("Welcome to the competency repository")

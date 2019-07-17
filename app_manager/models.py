@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class NewCenturySkill(models.Model):
@@ -25,6 +26,9 @@ class ActionPlan(models.Model):
 
 class BloomVerb(models.Model):
     bloom_verb = models.CharField(max_length=256)
+
+    def __str__(self):
+        return "{}".format(self.bloom_verb)
 
 
 class BloomLevel(models.Model):
@@ -77,10 +81,10 @@ class ExerciseManipulation(models.Model):
 class Exercise(models.Model):
     exercise_skills = models.ManyToManyField(Skill)
     exercise_text = models.CharField(max_length=1024)
-    exercise_image = models.CharField(max_length=256)
+    exercise_image = models.CharField(max_length=256, )
     exercise_solution = models.CharField(max_length=1024)
     exercise_manipulations = models.ManyToManyField(ExerciseManipulation)
-    exercise_pub_date = models.DateTimeField()
+    exercise_pub_date = models.DateTimeField('date published')
 
 
 class Role(models.Model):
@@ -90,8 +94,8 @@ class Role(models.Model):
 class Version(models.Model):
     version_number = models.IntegerField()
     version_text = models.IntegerField()
-    version_author = models.OneToOneField()
-    version_pub_date = models.DateTimeField()
+    version_author = models.OneToOneField(User, on_delete='cascade')
+    version_pub_date = models.DateTimeField('date published')
 
 
 class ValidationQuestion(models.Model):
@@ -132,7 +136,7 @@ class Deliverable(models.Model):
 
 
 class Milestone(models.Model):
-    milestone_date = models.DateField()
+    milestone_date = models.DateField('date published')
     milestone_deliverables = models.ManyToManyField(Deliverable)
 
 
@@ -149,7 +153,7 @@ class Problem(models.Model):
     problem_keyword = models.ManyToManyField(KeyWord)
     problem_problem = models.CharField(max_length=1024)
     problem_skill = models.ManyToManyField(Skill)
-    problem_hint_and_advise = models.OneToOneField(HintAndAdvise)
+    problem_hint_and_advise = models.OneToOneField(HintAndAdvise, on_delete='cascade')
     problem_action_plan = models.ManyToManyField(ActionPlan)
     problem_validation_questions = models.ManyToManyField(ValidationQuestion)
     problem_resources = models.ManyToManyField(Resource)
