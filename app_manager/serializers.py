@@ -5,4 +5,4 @@ from .models import BloomVerb
 class BloomVerbSerializer(serializers.ModelSerializer):
     class Meta:
         model = BloomVerb
-        fields = ("bloom_verb")
+        fields = '__all__'
