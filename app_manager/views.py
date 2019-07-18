@@ -1,11 +1,12 @@
-from django.shortcuts import render
 from django.http import HttpResponse
+from rest_framework.views import status
 
 # Create your views here.
 
 from rest_framework import generics
 from .models import BloomVerb
 from .serializers import BloomVerbSerializer
+from rest_framework.response import Response
 
 
 class BloomVerbView(generics.ListAPIView):
@@ -16,37 +17,25 @@ class BloomVerbView(generics.ListAPIView):
     serializer_class = BloomVerbSerializer
 
 
+class BloomVerbDetailView(generics.ListAPIView):
+    """
+    Provides a get method handler.
+    """
+    serializer_class = BloomVerbSerializer
+
+    def get(self, request, *args, **kwargs):
+        try :
+            bloom_verb = BloomVerb.objects.get(pk=kwargs["pk"])
+            return Response(BloomVerbSerializer(bloom_verb).data)
+        except BloomVerb.DoesNotExist:
+            return Response(
+                data={
+                    "message": "BloomVerb with id: {} does not exist".format(kwargs["pk"])
+                },
+                status=status.HTTP_404_NOT_FOUND
+
+            )
+
+
 def index(request):
     return HttpResponse("Welcome to the competency repository")
-
-
-def get_skills(request):
-    return HttpResponse("all skills")
-
-
-def get_questions_for_skill(request, skill):
-    return HttpResponse("Question for a skill")
-
-
-def get_questions_for_a_prosit(request, prosit_number):
-    return HttpResponse("Question for a skill")
-
-
-def get_prosits(request):
-    return HttpResponse("Question for a skill")
-
-
-def generate_student_cctl(request):
-    return HttpResponse("Question for a skill")
-
-
-def generate_teacher_cctl(request):
-    return HttpResponse("Question for a skill")
-
-
-def add_question(request, question):
-    return HttpResponse("Question for a skill")
-
-
-def add_prosit(request, prosit):
-    return HttpResponse("Question for a skill")
