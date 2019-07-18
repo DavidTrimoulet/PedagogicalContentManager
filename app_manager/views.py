@@ -10,11 +10,13 @@ from rest_framework.response import Response
 
 
 class BloomVerbView(generics.ListAPIView):
-    """
-    Provides a get method handler.
-    """
+
     queryset = BloomVerb.objects.all()
     serializer_class = BloomVerbSerializer
+
+    def post(self, request, *args, **kwargs):
+        bloom_verb = BloomVerb.objects.create(bloom_verb=request.data["bloom_verb"])
+        return Response(data=BloomVerbSerializer(bloom_verb).data, status=status.HTTP_201_CREATED)
 
 
 class BloomVerbDetailView(generics.ListAPIView):

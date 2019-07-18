@@ -27,9 +27,6 @@ class ActionPlan(models.Model):
 class BloomVerb(models.Model):
     bloom_verb = models.CharField(max_length=256)
 
-    def __str__(self):
-        return "{}".format(self.bloom_verb)
-
 
 class BloomLevel(models.Model):
     bloom_level = models.CharField(max_length=256)
