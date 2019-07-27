@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.utils import json
-from .models import BloomVerb
+from .models import *
 from .serializers import BloomVerbSerializer
 from rest_framework.views import status
 
@@ -16,8 +16,17 @@ class BaseViewTest(APITestCase):
         BloomVerb.objects.create(bloom_verb=verb)
 
     @staticmethod
-    def create_bloom_verb(verb=""):
-        BloomVerb.objects.create(bloom_verb=verb)
+    def create_bloom_level(level=""):
+        BloomLevel.objects.create(bloom_level=level)
+
+    @staticmethod
+    def create_bloom_taxonomy(level="", verb=""):
+        level = BloomLevel.objects.filter(bloom_level=level)
+        verb = BloomVerb.objects.filter(bloom_verb=verb)
+        print(level, verb)
+        bloom_taxonomy = BloomTaxonomy.objects.create()
+        bloom_taxonomy.bloom_level.set(level)
+        bloom_taxonomy.bloom_verb.set(verb)
 
     def setUp(self):
         # add test data
@@ -25,6 +34,10 @@ class BaseViewTest(APITestCase):
         self.create_bloom_verb("Explain")
         self.create_bloom_verb("Test")
         self.create_bloom_verb("Make")
+        self.create_bloom_level("Level1")
+        self.create_bloom_level("Level2")
+        self.create_bloom_taxonomy("Level1", "Create")
+        self.create_bloom_taxonomy("Level2", "Explain")
 
 
 class GetAllBloomVerbTest(BaseViewTest):
@@ -53,7 +66,7 @@ class GetAllBloomVerbTest(BaseViewTest):
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # Test error message
+    # Test error messageput
     def test_get_one_bloom_verb_with_pk_10(self):
         response = self.client.get(
             reverse("bloom_verb-detail", kwargs={"version": "v1", "pk": "10"})
@@ -67,4 +80,18 @@ class GetAllBloomVerbTest(BaseViewTest):
         expected = BloomVerb.objects.last()
         print(expected.bloom_verb)
         self.assertEqual(response.data["bloom_verb"], expected.bloom_verb)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_put_one_bloom_level(self):
+        response = self.client.post(
+            reverse('bloom_level-all', kwargs={'version': "v1"}), data=json.dumps({"bloom_level": "Level1"}), content_type='application/json')
+        expected = BloomLevel.objects.last()
+        self.assertEqual(response.data["bloom_level"], expected.bloom_level)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_put_one_bloom_taxonomy(self):
+        response = self.client.post(
+            reverse('bloom_taxonomy-all', kwargs={'version': "v1"}), data=json.dumps({"bloom_level": "Level1", "bloom_verb": "Make"}), content_type='application/json')
+        expected = BloomTaxonomy.objects.last()
+        self.assertEqual(response.data["bloom_level"], expected.bloom_level)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

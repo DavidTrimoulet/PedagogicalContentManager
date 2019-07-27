@@ -33,8 +33,8 @@ class BloomLevel(models.Model):
 
 
 class BloomTaxonomy(models.Model):
-    level = models.ManyToManyField(BloomLevel)
-    taxonomy_verb = models.ManyToManyField(BloomVerb)
+    bloom_level = models.ManyToManyField(BloomLevel)
+    bloom_verb = models.ManyToManyField(BloomVerb)
 
 
 class SkillFamily(models.Model):
