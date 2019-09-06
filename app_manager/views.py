@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from rest_framework.views import status
-
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 
 from rest_framework import generics
@@ -29,7 +29,7 @@ class BloomVerbDetailView(generics.ListAPIView):
         try :
             bloom_verb = BloomVerb.objects.get(pk=kwargs["pk"])
             return Response(BloomVerbSerializer(bloom_verb).data)
-        except BloomVerb.DoesNotExist:
+        except ObjectDoesNotExist:
             return Response(
                 data={
                     "message": "BloomVerb with id: {} does not exist".format(kwargs["pk"])
@@ -58,7 +58,7 @@ class BloomLevelDetailView(generics.ListAPIView):
         try :
             bloom_level = BloomLevel.objects.get(pk=kwargs["pk"])
             return Response(BloomLevelSerializer(bloom_level).data)
-        except BloomVerb.DoesNotExist:
+        except ObjectDoesNotExist:
             return Response(
                 data={
                     "message": "BloomLevel with id: {} does not exist".format(kwargs["pk"])
@@ -73,9 +73,10 @@ class BloomTaxonomyView(generics.ListAPIView):
     serializer_class = BloomTaxonomySerializer
 
     def post(self, request, *args, **kwargs):
-        bloom_taxonomy = BloomTaxonomy.objects.create()
-        bloom_taxonomy.bloom_level.set(BloomLevel.objects.filter(bloom_level=request.data["bloom_level"]))
-        bloom_taxonomy.bloom_verb.set(BloomVerb.objects.filter(bloom_verb=request.data["bloom_verb"]))
+
+        bloom_level, created = BloomLevel.objects.get_or_create(bloom_level=request.data["bloom_level"])
+        bloom_verb, created = BloomVerb.objects.get_or_create(bloom_verb=request.data["bloom_verb"])
+        bloom_taxonomy = BloomTaxonomy.objects.create(bloom_verb=bloom_verb, bloom_level=bloom_level)
         return Response(data=BloomTaxonomySerializer(bloom_taxonomy).data, status=status.HTTP_201_CREATED)
 
 
@@ -89,7 +90,7 @@ class BloomTaxonomyDetailView(generics.ListAPIView):
         try :
             bloom_verb = BloomVerb.objects.get(pk=kwargs["pk"])
             return Response(BloomVerbSerializer(bloom_verb).data)
-        except BloomVerb.DoesNotExist:
+        except ObjectDoesNotExist:
             return Response(
                 data={
                     "message": "BloomVerb with id: {} does not exist".format(kwargs["pk"])

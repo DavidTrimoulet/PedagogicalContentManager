@@ -33,8 +33,8 @@ class BloomLevel(models.Model):
 
 
 class BloomTaxonomy(models.Model):
-    bloom_level = models.ManyToManyField(BloomLevel)
-    bloom_verb = models.ManyToManyField(BloomVerb)
+    bloom_level = models.ForeignKey(BloomLevel, on_delete=models.CASCADE, null=True)
+    bloom_verb = models.ForeignKey(BloomVerb, on_delete=models.CASCADE, null=True)
 
 
 class SkillFamily(models.Model):
