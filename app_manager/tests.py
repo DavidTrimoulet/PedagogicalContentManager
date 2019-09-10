@@ -39,8 +39,8 @@ class BaseViewTest(APITestCase):
 
 class BloomTest(BaseViewTest):
 
-    def test_post_one_bloom_verb(self):
-        response = self.client.post(
+    def test_put_one_bloom_verb(self):
+        response = self.client.put(
             reverse('bloom_verb-all', kwargs={'version': "v1"}), data=json.dumps({"bloom_verb": "Analyse"}), content_type='application/json')
         expected = BloomVerb.objects.last()
         self.assertEqual(response.data["bloom_verb"], expected.bloom_verb)
@@ -61,8 +61,8 @@ class BloomTest(BaseViewTest):
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_one_bloom_verb_with_pk_1(self):
-        response = self.client.get(
+    def test_post_one_bloom_verb_with_pk_1(self):
+        response = self.client.post(
             reverse("bloom_verb-detail", kwargs={"version": "v1", "pk": "1"})
         )
         expected = BloomVerb.objects.get(pk=1)
@@ -70,15 +70,15 @@ class BloomTest(BaseViewTest):
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_one_bloom_verb_with_pk_10(self):
+    def test_post_one_bloom_verb_with_pk_10(self):
         response = self.client.get(
             reverse("bloom_verb-detail", kwargs={"version": "v1", "pk": "10"})
         )
         expected = status.HTTP_404_NOT_FOUND
         self.assertEqual(response.status_code, expected)
 
-    def test_post_one_bloom_level(self):
-        response = self.client.post(
+    def test_put_one_bloom_level(self):
+        response = self.client.put(
             reverse('bloom_level-all', kwargs={'version': "v1"}), data=json.dumps({"bloom_level": "Level1"}), content_type='application/json')
         expected = BloomLevel.objects.last()
         self.assertEqual(response.data["bloom_level"], expected.bloom_level)
@@ -99,7 +99,7 @@ class BloomTest(BaseViewTest):
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_one_bloom_level_with_pk_1(self):
+    def test_post_one_bloom_level_with_pk_1(self):
         response = self.client.get(
             reverse("bloom_level-detail", kwargs={"version": "v1", "pk": "1"})
         )
@@ -108,7 +108,7 @@ class BloomTest(BaseViewTest):
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_one_bloom_level_with_pk_10(self):
+    def test_post_one_bloom_level_with_pk_10(self):
         response = self.client.get(
             reverse("bloom_level-detail", kwargs={"version": "v1", "pk": "10"})
         )
@@ -117,7 +117,7 @@ class BloomTest(BaseViewTest):
         self.assertEqual(response.status_code, expected)
 
     def test_put_one_bloom_taxonomy(self):
-        response = self.client.post(
+        response = self.client.put(
             reverse('bloom_taxonomy-all', kwargs={'version': "v1"}), data=json.dumps({"bloom_level": "Level1", "bloom_verb": "Create"}), content_type='application/json')
         expected = BloomTaxonomy.objects.last()
         self.assertEqual(response.data["bloom_level"], expected.bloom_level.id)

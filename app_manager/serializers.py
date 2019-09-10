@@ -7,6 +7,7 @@ class BloomVerbSerializer(serializers.ModelSerializer):
         model = BloomVerb
         fields = '__all__'
 
+
 class BloomLevelSerializer(serializers.ModelSerializer):
     class Meta:
         model = BloomLevel
