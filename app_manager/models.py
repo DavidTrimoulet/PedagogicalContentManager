@@ -25,27 +25,26 @@ class ActionPlan(models.Model):
 
 
 class BloomVerb(models.Model):
-    bloom_verb = models.CharField(max_length=256)
+    verb = models.CharField(max_length=256)
 
 
 class BloomLevel(models.Model):
-    bloom_level = models.CharField(max_length=256)
+    level = models.CharField(max_length=256)
+
+
+class BloomFamily(models.Model):
+    family = models.CharField(max_length=256)
 
 
 class BloomTaxonomy(models.Model):
-    bloom_level = models.ForeignKey(BloomLevel, on_delete=models.CASCADE, null=True)
-    bloom_verb = models.ForeignKey(BloomVerb, on_delete=models.CASCADE, null=True)
-
-
-class SkillFamily(models.Model):
-    family_text = models.CharField(max_length=256)
-    bloom_ref = models.ManyToManyField(BloomTaxonomy)
+    level = models.ForeignKey(BloomLevel, on_delete=models.CASCADE, null=True)
+    verb = models.ForeignKey(BloomVerb,  on_delete=models.CASCADE, null=True)
+    family = models.ForeignKey(BloomFamily,  on_delete=models.CASCADE, null=True)
 
 
 class Skill(models.Model):
-    skill_verb = models.ManyToManyField(BloomTaxonomy)
+    skill_verb = models.ForeignKey(BloomTaxonomy, on_delete=models.CASCADE, null=True)
     skill_text = models.CharField(max_length=1024)
-    skill_family = models.ManyToManyField(SkillFamily)
 
 
 class SkillLevel(models.Model):
@@ -61,7 +60,7 @@ class CctlAnswer(models.Model):
 
 
 class CctlQuestion(models.Model):
-    cctl_skill = models.ManyToManyField(Skill)
+    cctl_skill = models.ForeignKey(Skill, on_delete=models.CASCADE, null=True)
     cctl_question_text = models.CharField(max_length=1024)
     cctl_question_answers = models.ManyToManyField(CctlAnswer)
 
@@ -76,11 +75,11 @@ class ExerciseManipulation(models.Model):
 
 
 class Exercise(models.Model):
-    exercise_skills = models.ManyToManyField(Skill)
+    exercise_skills = models.ForeignKey(Skill, on_delete='cascade', null=True )
     exercise_text = models.CharField(max_length=1024)
-    exercise_image = models.CharField(max_length=256, )
+    exercise_image = models.CharField(max_length=256)
     exercise_solution = models.CharField(max_length=1024)
-    exercise_manipulations = models.ManyToManyField(ExerciseManipulation)
+    exercise_manipulations = models.ForeignKey(ExerciseManipulation, on_delete='cascade', null=True)
     exercise_pub_date = models.DateTimeField('date published')
 
 
@@ -91,7 +90,7 @@ class Role(models.Model):
 class Version(models.Model):
     version_number = models.IntegerField()
     version_text = models.IntegerField()
-    version_author = models.OneToOneField(User, on_delete='cascade')
+    version_author = models.OneToOneField(User, on_delete='cascade', null=True)
     version_pub_date = models.DateTimeField('date published')
 
 
@@ -129,12 +128,12 @@ class HintAndAdvise(models.Model):
 
 class Deliverable(models.Model):
     deliverable_text = models.CharField(max_length=1024)
-    project_skills = models.ManyToManyField(Skill)
+    project_skills = models.ForeignKey(Skill, on_delete='cascade', null=True)
 
 
 class Milestone(models.Model):
     milestone_date = models.DateField('date published')
-    milestone_deliverables = models.ManyToManyField(Deliverable)
+    milestone_deliverables = models.ForeignKey(Deliverable, on_delete='cascade', null=True)
 
 
 class Workshop(models.Model):
@@ -150,7 +149,7 @@ class Problem(models.Model):
     problem_keyword = models.ManyToManyField(KeyWord)
     problem_problem = models.CharField(max_length=1024)
     problem_skill = models.ManyToManyField(Skill)
-    problem_hint_and_advise = models.OneToOneField(HintAndAdvise, on_delete='cascade')
+    problem_hint_and_advise = models.OneToOneField(HintAndAdvise, on_delete='cascade', null=True)
     problem_action_plan = models.ManyToManyField(ActionPlan)
     problem_validation_questions = models.ManyToManyField(ValidationQuestion)
     problem_resources = models.ManyToManyField(Resource)
