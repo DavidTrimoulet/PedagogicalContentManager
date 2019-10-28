@@ -23,34 +23,38 @@ class BaseViewTest(APITestCase):
     
     @staticmethod
     def create_bloom_taxonomy(level="", verb="", family=""):
-        level = BloomLevel.objects.get(level=level)
-        verb = BloomVerb.objects.get(verb=verb)
-        family = BloomFamily.objects.get(family=family)
-        BloomTaxonomy.objects.create(level=level, verb=verb, family=family)
+        level_ = BloomLevel.objects.filter(level=level).get()
+        verb_ = BloomVerb.objects.get(verb=verb)
+        family_ = BloomFamily.objects.get(family=family)
+        BloomTaxonomy.objects.create(level=level_, verb=verb_, family=family_)
 
     @staticmethod
     def create_skill(verb="", text=""):
-        verb = BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=verb))
-        Skill.objects.create(skill_verb=verb, skill_text=text)
+        taxonomy = BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=verb))
+        Skill.objects.create(taxonomy=taxonomy, text=text)
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         # add test data
-        self.create_bloom_verb(verb="Conceive")
-        self.create_bloom_verb(verb="Explain")
-        self.create_bloom_verb(verb="Describe")
-        self.create_bloom_verb(verb="Make")
-        self.create_bloom_level(level="Level1")
-        self.create_bloom_level(level="Level2")
-        self.create_bloom_family(family="Analyse")
-        self.create_bloom_family(family="Knowledge")
-        self.create_bloom_taxonomy(level="Level1", verb="Conceive", family="Analyse")
-        self.create_bloom_taxonomy(level="Level2", verb="Explain", family="Knowledge")
-        self.create_bloom_taxonomy(level="Level2", verb="Explain", family="Knowledge")
-        self.create_skill(verb="Conceive", text="elementary embedded systems")
+        cls.create_bloom_verb(verb="Conceive")
+        cls.create_bloom_verb(verb="Explain")
+        cls.create_bloom_verb(verb="Describe")
+        cls.create_bloom_verb(verb="Make")
+        cls.create_bloom_level(level="Level1")
+        cls.create_bloom_level(level="Level2")
+        cls.create_bloom_family(family="Analyse")
+        cls.create_bloom_family(family="Knowledge")
+        cls.create_bloom_taxonomy(level="Level1", verb="Conceive", family="Analyse")
+        cls.create_bloom_taxonomy(level="Level2", verb="Explain", family="Knowledge")
+        cls.create_skill(verb="Explain", text="elementary embedded systems")
 
+    @classmethod
+    def tearDownClass(cls):
+        pass
 
-class BloomVerbTest(BaseViewTest):
+class AppManagerTest(BaseViewTest):
 
+# Bloom verb
     def test_put_one_bloom_verb(self):
         response = self.client.put(
             reverse('bloom_verb-all', kwargs={'version': "v1"}), data=json.dumps({"verb": "Explain"}), content_type='application/json')
@@ -82,11 +86,10 @@ class BloomVerbTest(BaseViewTest):
         )
         expected = status.HTTP_404_NOT_FOUND
         self.assertEqual(response.status_code, expected)
-
-class BloomLevelTest(BaseViewTest):
+# Bloom Level
     def test_put_one_bloom_level(self):
         response = self.client.put(
-            reverse('bloom_level-all', kwargs={'version': "v1"}), data=json.dumps({"level": "Level1"}), content_type='application/json')
+            reverse('bloom_level-all', kwargs={'version': "v1"}), data=json.dumps({"level": "Level3"}), content_type='application/json')
         expected = BloomLevel.objects.last()
         self.assertEqual(response.data["level"], expected.level)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -118,7 +121,7 @@ class BloomLevelTest(BaseViewTest):
         self.assertEqual(response.data["message"], "BloomLevel with id: 10 does not exist")
         self.assertEqual(response.status_code, expected)
 
-class BloomFamilyTest(BaseViewTest):
+# Bloom Family
     def test_put_one_bloom_family(self):
         response = self.client.put(
             reverse('bloom_families-all', kwargs={'version': "v1"}), data=json.dumps({"family": "Evaluate"}), content_type='application/json')
@@ -136,11 +139,11 @@ class BloomFamilyTest(BaseViewTest):
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_post_one_bloom_family_with_pk_3(self):
+    def test_post_one_bloom_family_with_pk_1(self):
         response = self.client.post(
-            reverse("bloom_families-detail", kwargs={"version": "v1", "pk": "3"})
+            reverse("bloom_families-detail", kwargs={"version": "v1", "pk": "1"})
         )
-        expected = BloomFamily.objects.get(pk=3)
+        expected = BloomFamily.objects.get(pk=1)
         serialized = BloomFamilySerializer(expected, many=False)
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -153,10 +156,10 @@ class BloomFamilyTest(BaseViewTest):
         self.assertEqual(response.data["message"], "BloomFamily with id: 10 does not exist")
         self.assertEqual(response.status_code, expected)
 
-class BloomTaxonomyTest(BaseViewTest):
+# Bloom Taxonomy
     def test_put_one_bloom_taxonomy(self):
         response = self.client.put(
-            reverse('bloom_taxonomies-all', kwargs={'version': "v1"}), data=json.dumps({"level": "Level5", "verb": "Create", "family":"Analyse"}), content_type='application/json')
+            reverse('bloom_taxonomies-all', kwargs={'version': "v1"}), data=json.dumps({"level": "Level4", "verb": "Create", "family":"Analyse"}), content_type='application/json')
         expected = BloomTaxonomy.objects.last()
         self.assertEqual(response.data["level"], expected.level.level)
         self.assertEqual(response.data["verb"], expected.verb.verb)
@@ -173,32 +176,31 @@ class BloomTaxonomyTest(BaseViewTest):
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_post_one_bloom_taxonomy_with_pk_1(self):
+    def test_post_one_bloom_taxonomy_with_verb_(self):
         response = self.client.post(
-            reverse("bloom_taxonomies-detail", kwargs={"version": "v1", "pk": "1"})
+            reverse("bloom_taxonomies-detail", kwargs={"version": "v1", "verb": "Conceive"})
         )
-        expected = BloomTaxonomy.objects.get(pk=1)
+        expected = BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb="Conceive"))
         serialized = BloomTaxonomySerializer(expected, many=False)
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_post_one_bloom_taxonomy_with_pk_10(self):
+    def test_post_one_bloom_taxonomy_with_verb_Test(self):
         response = self.client.post(
-            reverse("bloom_taxonomies-detail", kwargs={"version": "v1", "pk": "10"})
+            reverse("bloom_taxonomies-detail", kwargs={"version": "v1", "verb": "Test"})
         )
         expected = status.HTTP_404_NOT_FOUND
-        self.assertEqual(response.data["message"], "BloomTaxonomy with id: 10 does not exist")
+        self.assertEqual(response.data["message"], "BloomTaxonomy verb : Test does not exist")
         self.assertEqual(response.status_code, expected)
         
         
-class SkillTest(BaseViewTest):
+# Skill
     def test_put_one_skill(self):
         response = self.client.put(
-            reverse('skill-all', kwargs={"version": "v1"}), data=json.dumps({"verb":"Describe", "skill":"electronic elementary component behaviour"}), content_type='application/json')
+            reverse('skill-all', kwargs={"version": "v1"}), data=json.dumps({"verb":"Conceive", "skill":"electronic elementary component behaviour"}), content_type='application/json')
         expected = Skill.objects.last()
-        print(response.data)
-        self.assertEqual(response.data["skill_verb"], expected.skill_verb)
-        self.assertEqual(response.data["text_text"], expected.skill_text)
+        self.assertEqual(response.data["taxonomy"],  BloomTaxonomySerializer(expected.taxonomy).data)
+        self.assertEqual(response.data["text"], expected.text)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_get_all_skill(self):
@@ -211,19 +213,19 @@ class SkillTest(BaseViewTest):
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_post_one_skill_with_pk_1(self):
+    def test_post_one_skill_with_verb_Explain(self):
         response = self.client.post(
-            reverse("skill-detail", kwargs={"version": "v1", "pk": "1"})
+            reverse("skill-detail", kwargs={"version": "v1", "verb": "Explain"})
         )
-        expected = Skill.objects.get(pk=1)
+        expected = Skill.objects.get(taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb="Explain")))
         serialized = SkillSerializer(expected, many=False)
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_post_one_skill_with_pk_10(self):
+    def test_post_one_skill_with_verb_complain(self):
         response = self.client.post(
-            reverse("skill-detail", kwargs={"version": "v1", "pk": "10"})
+            reverse("skill-detail", kwargs={"version": "v1", "verb": "Complain"})
         )
         expected = status.HTTP_404_NOT_FOUND
-        self.assertEqual(response.data["message"], "Skill with id: 10 does not exist")
+        self.assertEqual(response.data["message"], "Skill with verb Complain does not exist")
         self.assertEqual(response.status_code, expected)

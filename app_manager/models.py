@@ -43,8 +43,8 @@ class BloomTaxonomy(models.Model):
 
 
 class Skill(models.Model):
-    skill_verb = models.ForeignKey(BloomTaxonomy, on_delete=models.CASCADE, null=True)
-    skill_text = models.CharField(max_length=1024)
+    taxonomy = models.ForeignKey(BloomTaxonomy, on_delete=models.CASCADE, null=True)
+    text = models.CharField(max_length=1024)
 
 
 class SkillLevel(models.Model):

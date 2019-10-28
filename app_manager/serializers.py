@@ -30,7 +30,7 @@ class BloomTaxonomySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SkillSerializer(serializers.ModelSerializer):
-    skill_verb = BloomTaxonomySerializer(many=False, read_only=True)
+    taxonomy = BloomTaxonomySerializer(many=False, read_only=True)
 
     class Meta:
         model = Skill

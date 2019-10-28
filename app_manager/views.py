@@ -128,12 +128,13 @@ class BloomTaxonomyDetailView(generics.ListAPIView):
 
     def post(self, request, *args, **kwargs):
         try :
-            bloom_taxonomy = BloomTaxonomy.objects.get(pk=kwargs["pk"])
+            bloom_taxonomy = BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=kwargs["verb"]))
+            print(bloom_taxonomy.__dict__)
             return Response(BloomTaxonomySerializer(bloom_taxonomy).data)
         except ObjectDoesNotExist:
             return Response(
                 data={
-                    "message": "BloomTaxonomy with id: {} does not exist".format(kwargs["pk"])
+                    "message": "BloomTaxonomy verb : {} does not exist".format(kwargs["verb"])
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
@@ -147,16 +148,10 @@ class SkillView(generics.ListAPIView):
         return Response(data=self.serializer_class(self.queryset.all(), many=True).data, status=status.HTTP_200_OK)
 
     def put(self, request, *args, **kwargs):
-        print(request.data["verb"])
         bloom_verb = BloomVerb.objects.get(verb=request.data["verb"])
-        print(bloom_verb)
-        skill_verb, created = BloomTaxonomy.objects.get_or_create(verb=bloom_verb)
-        print(skill_verb)
-        skill = Skill.objects.create(skill_verb=skill_verb, skill_text=request.data["skill"])
-        print(skill)
-        my_data = SkillSerializer(skill).data
-        print(my_data)
-        return Response(data=my_data, status=status.HTTP_201_CREATED)
+        taxonomy = BloomTaxonomy.objects.get(verb=bloom_verb)
+        skill = Skill.objects.create(taxonomy=taxonomy, text=request.data["skill"])
+        return Response(data=SkillSerializer(skill).data, status=status.HTTP_201_CREATED)
 
 
 class SkillDetailView(generics.ListAPIView):
@@ -164,12 +159,12 @@ class SkillDetailView(generics.ListAPIView):
 
     def post(self, request, *args, **kwargs):
         try :
-            skill = Skill.objects.get(pk=kwargs["pk"])
+            skill = Skill.objects.get(taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=kwargs["verb"])))
             return Response(self.serializer_class(skill).data)
         except ObjectDoesNotExist:
             return Response(
                 data={
-                    "message": "Skill with id: {} does not exist".format(kwargs["pk"])
+                    "message": "Skill with verb {} does not exist".format(kwargs["verb"])
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
