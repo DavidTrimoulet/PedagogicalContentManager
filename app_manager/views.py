@@ -8,7 +8,6 @@ from .models import *
 from .serializers import *
 from rest_framework.response import Response
 
-
 class BloomVerbView(generics.ListAPIView):
 
     queryset = BloomVerb.objects.all()
@@ -19,6 +18,7 @@ class BloomVerbView(generics.ListAPIView):
 
     def put(self, request, *args, **kwargs):
         bloom_verb = BloomVerb.objects.create(verb=request.data["verb"])
+        bloom_verb.save()
         return Response(data=self.serializer_class(bloom_verb).data, status=status.HTTP_201_CREATED)
 
 
@@ -52,6 +52,7 @@ class BloomLevelView(generics.ListAPIView):
 
     def put(self, request, *args, **kwargs):
         bloom_level = BloomLevel.objects.create(level=request.data["level"])
+        bloom_level.save()
         return Response(data=self.serializer_class(bloom_level).data, status=status.HTTP_201_CREATED)
 
 
@@ -83,6 +84,7 @@ class BloomFamilyView(generics.ListAPIView):
 
     def put(self, request, *args, **kwargs):
         bloom_family = BloomFamily.objects.create(family=request.data["family"])
+        bloom_family.save()
         return Response(data=self.serializer_class(bloom_family).data, status=status.HTTP_201_CREATED)
 
 
@@ -117,19 +119,17 @@ class BloomTaxonomyView(generics.ListAPIView):
         bloom_verb, created = BloomVerb.objects.get_or_create(verb=request.data["verb"])
         bloom_family, created = BloomFamily.objects.get_or_create(family=request.data["family"])
         bloom_taxonomy = BloomTaxonomy.objects.create(verb=bloom_verb, level=bloom_level, family=bloom_family)
+        bloom_taxonomy.save()
         return Response(data=BloomTaxonomySerializer(bloom_taxonomy).data, status=status.HTTP_201_CREATED)
 
 
 class BloomTaxonomyDetailView(generics.ListAPIView):
-    """
-    Provides a get method handler.
-    """
+
     serializer_class = BloomTaxonomySerializer
 
     def post(self, request, *args, **kwargs):
         try :
             bloom_taxonomy = BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=kwargs["verb"]))
-            print(bloom_taxonomy.__dict__)
             return Response(BloomTaxonomySerializer(bloom_taxonomy).data)
         except ObjectDoesNotExist:
             return Response(
@@ -138,6 +138,7 @@ class BloomTaxonomyDetailView(generics.ListAPIView):
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
+
 
 class SkillView(generics.ListAPIView):
 
@@ -150,7 +151,8 @@ class SkillView(generics.ListAPIView):
     def put(self, request, *args, **kwargs):
         bloom_verb = BloomVerb.objects.get(verb=request.data["verb"])
         taxonomy = BloomTaxonomy.objects.get(verb=bloom_verb)
-        skill = Skill.objects.create(taxonomy=taxonomy, text=request.data["skill"])
+        skill = Skill.objects.create(taxonomy=taxonomy, text=request.data["text"])
+        skill.save()
         return Response(data=SkillSerializer(skill).data, status=status.HTTP_201_CREATED)
 
 
@@ -165,6 +167,37 @@ class SkillDetailView(generics.ListAPIView):
             return Response(
                 data={
                     "message": "Skill with verb {} does not exist".format(kwargs["verb"])
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class SkillRubricksView(generics.ListAPIView):
+
+    queryset = SkillRubricks.objects.all()
+    serializer_class = SkillRubricksSerializer
+
+    def get(self, request, *args, **kwargs):
+        return Response(data=self.serializer_class(self.queryset.all(), many=True).data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        skill, created = Skill.objects.get_or_create(taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=request.data["verb"])), text=request.data["text"])
+        skill_rubricks = SkillRubricks.objects.create(skill=skill, level_A=request.data["level_A"], level_B=request.data["level_B"], level_C=request.data["level_C"], level_D=request.data["level_D"])
+        skill_rubricks.save()
+        return Response(data=SkillRubricksSerializer(skill_rubricks).data, status=status.HTTP_201_CREATED)
+
+
+class SkillRubricksDetailView(generics.ListAPIView):
+    serializer_class = SkillRubricksSerializer
+
+    def post(self, request, *args, **kwargs):
+        try :
+            skill_rubricks = SkillRubricks.objects.get(skill=Skill.objects.get(taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=kwargs["verb"])), text=kwargs["text"]))
+            return Response(self.serializer_class(skill_rubricks).data)
+        except ObjectDoesNotExist:
+            return Response(
+                data={
+                    "message": "SkillRubricks with verb {} does not exist".format(kwargs["verb"])
                 },
                 status=status.HTTP_404_NOT_FOUND
             )

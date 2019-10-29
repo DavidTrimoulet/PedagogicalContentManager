@@ -20,5 +20,8 @@ urlpatterns = [
     path('bloom_taxonomies/<str:verb>/', BloomTaxonomyDetailView.as_view(), name="bloom_taxonomies-detail"),
     # Skill
     path('skill/', SkillView.as_view(), name="skill-all"),
-    path('skill/<str:verb>/', SkillDetailView.as_view(), name="skill-detail")
+    path('skill/<str:verb>/', SkillDetailView.as_view(), name="skill-detail"),
+    # Skill Rubricks
+    path('skill_rubricks/', SkillRubricksView.as_view(), name="skill_rubricks-all"),
+    path('skill_rubricks/<str:verb>/<str:text>', SkillRubricksDetailView.as_view(), name="skill_rubricks-detail")
 ]

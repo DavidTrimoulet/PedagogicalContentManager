@@ -35,3 +35,10 @@ class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
         fields = '__all__'
+
+class SkillRubricksSerializer(serializers.ModelSerializer):
+    skill = SkillSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = SkillRubricks
+        fields = '__all__'

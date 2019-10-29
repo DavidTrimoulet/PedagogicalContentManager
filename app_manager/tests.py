@@ -23,7 +23,7 @@ class BaseViewTest(APITestCase):
     
     @staticmethod
     def create_bloom_taxonomy(level="", verb="", family=""):
-        level_ = BloomLevel.objects.filter(level=level).get()
+        level_ = BloomLevel.objects.get(level=level)
         verb_ = BloomVerb.objects.get(verb=verb)
         family_ = BloomFamily.objects.get(family=family)
         BloomTaxonomy.objects.create(level=level_, verb=verb_, family=family_)
@@ -32,6 +32,11 @@ class BaseViewTest(APITestCase):
     def create_skill(verb="", text=""):
         taxonomy = BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=verb))
         Skill.objects.create(taxonomy=taxonomy, text=text)
+
+    @staticmethod
+    def create_skill_rubricks(verb="", text="", level_A="", level_B="",level_C="",level_D=""):
+        skill = Skill.objects.get(taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=verb)), text=text)
+        SkillRubricks.objects.create(skill=skill, level_A=level_A, level_B=level_B, level_C=level_C, level_D=level_D)
 
     @classmethod
     def setUpClass(cls):
@@ -45,8 +50,15 @@ class BaseViewTest(APITestCase):
         cls.create_bloom_family(family="Analyse")
         cls.create_bloom_family(family="Knowledge")
         cls.create_bloom_taxonomy(level="Level1", verb="Conceive", family="Analyse")
+        cls.create_bloom_taxonomy(level="Level1", verb="Describe", family="Analyse")
         cls.create_bloom_taxonomy(level="Level2", verb="Explain", family="Knowledge")
         cls.create_skill(verb="Explain", text="elementary embedded systems")
+        cls.create_skill(verb="Describe", text="electronic elementary component behaviour")
+        cls.create_skill_rubricks(verb="Explain", text="elementary embedded systems",
+                                  level_A="Can explain what are ALU, Register, Memory and IO",
+                                  level_B="Can explain what are ALU, Register and Memory",
+                                  level_C="Can explain what are ALU and Register",
+                                  level_D="Can explain what is ALU")
 
     @classmethod
     def tearDownClass(cls):
@@ -197,7 +209,10 @@ class AppManagerTest(BaseViewTest):
 # Skill
     def test_put_one_skill(self):
         response = self.client.put(
-            reverse('skill-all', kwargs={"version": "v1"}), data=json.dumps({"verb":"Conceive", "skill":"electronic elementary component behaviour"}), content_type='application/json')
+            reverse('skill-all', kwargs={"version": "v1"}),
+                                 data=json.dumps({"verb":"Conceive",
+                                                  "text":"electronic elementary component behaviour"}),
+                                 content_type='application/json')
         expected = Skill.objects.last()
         self.assertEqual(response.data["taxonomy"],  BloomTaxonomySerializer(expected.taxonomy).data)
         self.assertEqual(response.data["text"], expected.text)
@@ -228,4 +243,48 @@ class AppManagerTest(BaseViewTest):
         )
         expected = status.HTTP_404_NOT_FOUND
         self.assertEqual(response.data["message"], "Skill with verb Complain does not exist")
+        self.assertEqual(response.status_code, expected)
+
+# Skill Rubriks
+    def test_put_one_skill_rubriks(self):
+        response = self.client.put(
+            reverse('skill_rubricks-all', kwargs={"version": "v1"}),
+                                          data=json.dumps({"verb":"Describe",
+                                                           "text":"electronic elementary component behaviour",
+                                                           "level_A": "Can explain Resistance, Impedance, Inductance and Capacitance",
+                                                           "level_B": "Can explain Resistance, Impedance and Inductance",
+                                                           "level_C": "Can explain Resistance and Impedance",
+                                                           "level_D": "Can explain Resistance" }),
+                                          content_type='application/json')
+        expected = SkillRubricks.objects.last()
+        self.assertEqual(response.data["skill"]["taxonomy"],  BloomTaxonomySerializer(expected.skill.taxonomy).data)
+        self.assertEqual(response.data["skill"]["text"], SkillSerializer(expected.skill).data["text"])
+        self.assertEqual(response.data["level_A"], expected.level_A)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_get_all_skill_rubriks(self):
+        response = self.client.get(
+            reverse("skill_rubricks-all", kwargs={"version": "v1"})
+        )
+        # fetch the data from db
+        expected = SkillRubricks.objects.all()
+        serialized = SkillRubricksSerializer(expected, many=True)
+        self.assertEqual(response.data, serialized.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_post_one_skill_rubricks_with_skill_Explain_electronic_elementary_component_behaviour(self):
+        response = self.client.post(
+            reverse("skill_rubricks-detail", kwargs={"version": "v1", "verb": "Explain", "text": "elementary embedded systems"})
+        )
+        expected = SkillRubricks.objects.get(skill=Skill.objects.get(taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb="Explain")), text="elementary embedded systems"))
+        serialized = SkillRubricksSerializer(expected, many=False)
+        self.assertEqual(response.data, serialized.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_post_one_skill_rubricks_with_verb_complain(self):
+        response = self.client.post(
+            reverse("skill_rubricks-detail", kwargs={"version": "v1", "verb": "Describe", "text": "elementary embedded systems"})
+        )
+        expected = status.HTTP_404_NOT_FOUND
+        self.assertEqual(response.data["message"], "SkillRubricks with verb Describe does not exist")
         self.assertEqual(response.status_code, expected)
