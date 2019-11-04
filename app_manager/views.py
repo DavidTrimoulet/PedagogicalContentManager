@@ -201,6 +201,3 @@ class SkillRubricksDetailView(generics.ListAPIView):
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
-
-def index(request):
-    return HttpResponse("Welcome to the competency repository")
