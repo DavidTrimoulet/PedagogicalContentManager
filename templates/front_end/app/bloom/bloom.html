@@ -1,0 +1,8 @@
+<p>This is the bloom taxonomy view.</p>
+{{ clean_taxonomies }}
+<table class="table">
+    <thead>
+        <tr><th ng-repeat="val in taxonomies_head">{{ val }} </th></tr>
+    </thead>
+    <tbody>{{ taxonomies_data }}</tbody>
+</table>

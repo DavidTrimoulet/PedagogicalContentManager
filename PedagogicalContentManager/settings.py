@@ -25,7 +25,7 @@ SECRET_KEY = '9djuqy5p+y$+3geapx3714lg0oj7_cl1lu%nx5e#35#9m0(2xg'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ ]
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +50,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'PedagogicalContentManager.urls'
@@ -56,7 +59,7 @@ ROOT_URLCONF = 'PedagogicalContentManager.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        'DIRS': [os.path.join(BASE_DIR, 'templates/front_end/app')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -68,6 +71,10 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "templates/front_end/app/")
 ]
 
 WSGI_APPLICATION = 'PedagogicalContentManager.wsgi.application'
@@ -134,3 +141,9 @@ STATIC_URL = '/static/'
 REST_FRAMEWORK = {
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
 }
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8000"
+]
+CORS_ORIGIN_ALLOW_ALL = True
