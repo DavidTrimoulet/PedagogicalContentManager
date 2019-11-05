@@ -1,8 +1,11 @@
 <p>This is the bloom taxonomy view.</p>
-{{ clean_taxonomies }}
 <table class="table">
-    <thead>
-        <tr><th ng-repeat="val in taxonomies_head">{{ val }} </th></tr>
+    <thead class="thead-dark">
+        <tr><th ng-repeat="family in taxonomies_head"> {{ family }}</th></tr>
     </thead>
-    <tbody>{{ taxonomies_data }}</tbody>
+    <tbody>
+        <tr ng-repeat="line in taxonomies_data track by $index">
+            <td ng-repeat="val in line track by $index"> {{val}} </td>
+        </tr>
+    </tbody>
 </table>
