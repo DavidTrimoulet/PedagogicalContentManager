@@ -1,0 +1,51 @@
+<p>This is the partial for skills.</p>
+<p>{{ taxonomies }}</p>
+<table class="table table-bordered table-bordered">
+    <tr ng-repeat="element in skills">
+        <td>{{ element.taxonomy.verb }}</td>
+        <td> {{ element.text }}</td>
+    </tr>
+</table>
+<div ng-controller="autocompleteCtrl as ctrl" layout="column" ng-cloak>
+    <table class="table-striped table-bordered">
+        <tr>
+            <th>Verb</th>
+            <th>Competency</th>
+        </tr>
+        <tr>
+            <td>
+                <md-autocomplete
+                        md-clear-button="False"
+                        ng-disabled="ctrl.isDisabled"
+                        md-no-cache="ctrl.noCache"
+                        md-selected-item="ctrl.selectedItem"
+                        md-search-text-change="ctrl.searchTextChange(ctrl.searchText)"
+                        md-search-text="ctrl.searchText"
+                        md-selected-item-change="ctrl.selectedItemChange(item)"
+                        md-items="item in ctrl.querySearch(ctrl.searchText)"
+                        md-item-text="item.verb"
+                        md-min-length="0"
+                        placeholder="Verb ? "
+                        input-aria-labelledby="verbLabel"
+                        input-aria-describedby="autocompleteDetailedDescription">
+                    <md-item-template>
+                        <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i">{{ item.verb }}</span>
+                    </md-item-template>
+                    <md-not-found>
+                        No verb matching "{{ ctrl.searchText }}" were found.
+                    </md-not-found>
+                </md-autocomplete>
+            </td>
+            <td>
+                <div class="input-group">
+                    <input type="text" ng-model="skill.text"/>
+                    <span class="input-group-append">
+                    <button class="btn btn-success" type="submit" ng-click="ctrl.addTaxonomy(skill)">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                    </span>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

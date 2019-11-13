@@ -5,10 +5,15 @@ angular.module('myApp', [
   'ngRoute',
   'myApp.home',
   'myApp.bloom',
-  'myApp.view2',
-  'myApp.version'
-]).
-config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+  'myApp.skill',
+  'myApp.version',
+  'myApp.navBar',
+  'autocomplete',
+]).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.hashPrefix('!');
   $routeProvider.otherwise({redirectTo: '/home'});
 }]);
+
+angular.module('sideComponent', [
+
+]);
