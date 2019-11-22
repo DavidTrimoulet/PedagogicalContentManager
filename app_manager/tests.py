@@ -288,3 +288,5 @@ class AppManagerTest(BaseViewTest):
         expected = status.HTTP_404_NOT_FOUND
         self.assertEqual(response.data["message"], "SkillRubricks with verb Describe does not exist")
         self.assertEqual(response.status_code, expected)
+
+#

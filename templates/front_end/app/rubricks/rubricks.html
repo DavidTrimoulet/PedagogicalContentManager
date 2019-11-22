@@ -1,0 +1,51 @@
+<p>This is the partial for Rubricks.</p>
+<div class="main-container">
+    <div ng-controller="SkillAutocompleteCtrl as ctrl" class="container">
+        <table class="table-bordered table table-dark">
+            <tr>
+                <td colspan="5">
+                    <md-autocomplete
+                            md-clear-button="False"
+                            ng-disabled="ctrl.isDisabled"
+                            md-no-cache="ctrl.noCache"
+                            md-selected-item="ctrl.selectedItem"
+                            md-search-text="ctrl.searchText"
+                            md-selected-item-change="ctrl.selectedItemChange(item)"
+                            md-items="item in ctrl.querySearch(ctrl.searchText)"
+                            md-item-text="item.key"
+                            md-min-length="0"
+                            placeholder="Skill ">
+                        <md-item-template>
+                            <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i">{{ item.key }}</span>
+                        </md-item-template>
+                        <md-not-found>
+                            No verb matching "{{ ctrl.searchText }}" were found.
+                        </md-not-found>
+                    </md-autocomplete>
+                </td>
+            </tr>
+            <tr>
+                <th>Level A</th>
+                <th>Level B</th>
+                <th>Level C</th>
+                <th>Level D</th>
+            </tr>
+            <tbody class="container-fluid text-center">
+            <tr>
+                <td>
+                    <textarea ng-model="ctrl.selectedItem.value.level_A" rows="5" ng-change="ctrl.update()"/>
+                </td>
+                <td>
+                    <textarea ng-model="ctrl.selectedItem.value.level_B" rows="5" ng-change="ctrl.update()"/>
+                </td>
+                <td>
+                    <textarea ng-model="ctrl.selectedItem.value.level_C" rows="5" ng-change="ctrl.update()"/>
+                </td>
+                <td>
+                    <textarea ng-model="ctrl.selectedItem.value.level_D" rows="5" ng-change="ctrl.update()"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

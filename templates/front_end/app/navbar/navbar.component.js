@@ -10,6 +10,14 @@ angular.module('myApp.navBar', ['ngRoute'])
                 {
                     name: 'skill',
                     folder: 'skill'
+                },
+                {
+                    name: 'rubricks',
+                    folder: 'rubricks'
+                },
+                {
+                    name: 'problem',
+                    folder: 'problem'
                 }
             ];
         }

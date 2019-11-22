@@ -48,7 +48,7 @@ class Skill(models.Model):
 
 
 class SkillRubricks(models.Model):
-    skill = models.OneToOneField(Skill, on_delete='cascade')
+    skill = models.ForeignKey(Skill, on_delete='cascade')
     level_A = models.CharField(max_length=1024)
     level_B = models.CharField(max_length=1024)
     level_C = models.CharField(max_length=1024)
@@ -87,19 +87,6 @@ class Role(models.Model):
     role = models.CharField(max_length=256)
 
 
-class Version(models.Model):
-    number = models.IntegerField()
-    text = models.IntegerField()
-    author = models.OneToOneField(User, on_delete='cascade', null=True)
-    pub_date = models.DateTimeField('date published')
-
-
-class ValidationQuestion(models.Model):
-    text = models.CharField(max_length=1024)
-    answer = models.CharField(max_length=1024)
-    answer_schema = models.CharField(max_length=256)
-
-
 class Resource(models.Model):
     ref = models.CharField(max_length=1024)
     image = models.CharField(max_length=256)
@@ -109,21 +96,6 @@ class KeyWord(models.Model):
     keyword = models.CharField(max_length=1024)
     definition = models.CharField(max_length=1024)
     definition_schema = models.CharField(max_length=256)
-
-
-class Solution(models.Model):
-    text = models.CharField(max_length=1024)
-    image = models.CharField(max_length=256)
-
-
-class Hypothesis(models.Model):
-    text = models.CharField(max_length=1024)
-    answer = models.CharField(max_length=1024)
-    answer_image = models.CharField(max_length=256)
-
-
-class HintAndAdvise(models.Model):
-    text = models.CharField(max_length=1024)
 
 
 class Deliverable(models.Model):
@@ -140,7 +112,6 @@ class Workshop(models.Model):
     title = models.CharField(max_length=256)
     text = models.CharField(max_length=1024)
     steps = models.ManyToManyField(Exercise)
-    versions = models.ManyToManyField(Version)
 
 
 class Problem(models.Model):
@@ -148,13 +119,36 @@ class Problem(models.Model):
     text = models.CharField(max_length=1024)
     keyword = models.ManyToManyField(KeyWord)
     skill = models.ManyToManyField(Skill)
-    hint_and_advise = models.OneToOneField(HintAndAdvise, on_delete='cascade', null=True)
     action_plan = models.ManyToManyField(ActionPlan)
-    validation_questions = models.ManyToManyField(ValidationQuestion)
     resources = models.ManyToManyField(Resource)
-    solution = models.ManyToManyField(Solution)
-    versions = models.ManyToManyField(Version)
 
+class Version(models.Model):
+    problem = models.ForeignKey(Problem, on_delete='cascade', null=True)
+    number = models.IntegerField()
+    text = models.CharField(max_length=256)
+    author = models.OneToOneField(User, on_delete='cascade', null=True)
+    pub_date = models.DateTimeField('date published')
+
+class Solution(models.Model):
+    problem = models.ForeignKey(Problem, on_delete='cascade', null=True)
+    text = models.CharField(max_length=1024)
+    image = models.CharField(max_length=256)
+
+class ValidationQuestion(models.Model):
+    problem = models.ForeignKey(Problem, on_delete='cascade', null=True)
+    text = models.CharField(max_length=1024)
+    answer = models.CharField(max_length=1024)
+    answer_schema = models.CharField(max_length=256)
+
+class Hypothesis(models.Model):
+    problem = models.ForeignKey(Problem, on_delete='cascade', null=True)
+    text = models.CharField(max_length=1024)
+    answer = models.CharField(max_length=1024)
+    answer_image = models.CharField(max_length=256)
+
+class HintAndAdvise(models.Model):
+    problem = models.ForeignKey(Problem, on_delete='cascade', null=True)
+    text = models.CharField(max_length=1024)
 
 class Project(models.Model):
     project_text = models.CharField(max_length=1024)

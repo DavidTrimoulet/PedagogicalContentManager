@@ -22,5 +22,8 @@ urlpatterns = [
     path('skill/<str:verb>/', SkillDetailView.as_view(), name="skill-detail"),
     # Skill Rubricks
     path('skill_rubricks/', SkillRubricksView.as_view(), name="skill_rubricks-all"),
-    path('skill_rubricks/<str:verb>/<str:text>', SkillRubricksDetailView.as_view(), name="skill_rubricks-detail")
+    path('skill_rubricks/<str:verb>/<str:text>', SkillRubricksDetailView.as_view(), name="skill_rubricks-detail"),
+    # Problems
+    path('problems/', ProblemsView.as_view(), name="problems-all"),
+    path('problems/<str:text>', ProblemsDetailView.as_view(), name="keyword-detail")
 ]

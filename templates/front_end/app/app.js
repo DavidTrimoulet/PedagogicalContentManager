@@ -8,7 +8,10 @@ angular.module('myApp', [
   'myApp.skill',
   'myApp.version',
   'myApp.navBar',
-  'autocomplete',
+  'myApp.rubricks',
+  'myApp.problem',
+  'autocomplete.bloom',
+  'autocomplete.skill'
 ]).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.hashPrefix('!');
   $routeProvider.otherwise({redirectTo: '/home'});

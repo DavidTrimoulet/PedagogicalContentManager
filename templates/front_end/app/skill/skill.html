@@ -1,5 +1,4 @@
 <p>This is the partial for skills.</p>
-<p>{{ taxonomies }}</p>
 <table class="table table-bordered table-bordered">
     <tr ng-repeat="element in skills">
         <td>{{ element.taxonomy.verb }}</td>
@@ -25,9 +24,7 @@
                         md-items="item in ctrl.querySearch(ctrl.searchText)"
                         md-item-text="item.verb"
                         md-min-length="0"
-                        placeholder="Verb ? "
-                        input-aria-labelledby="verbLabel"
-                        input-aria-describedby="autocompleteDetailedDescription">
+                        placeholder="Verb ? ">
                     <md-item-template>
                         <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i">{{ item.verb }}</span>
                     </md-item-template>

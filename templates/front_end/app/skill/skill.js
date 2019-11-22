@@ -39,7 +39,7 @@ angular.module('myApp.skill', ['ngRoute', 'ngMaterial'])
 
     });
 
-angular.module('autocomplete', ['ngMaterial'])
+angular.module('autocomplete.bloom', ['ngMaterial'])
     .controller('autocompleteCtrl', AutocompleteCtrl);
 
 function AutocompleteCtrl($timeout, $q, $log, $scope, $http) {
@@ -78,8 +78,7 @@ function AutocompleteCtrl($timeout, $q, $log, $scope, $http) {
         };
 
     function querySearch(query) {
-        var results =  findVerb(query);
-        return results;
+        return  findVerb(query);
     }
 
     function searchTextChange(text) {
