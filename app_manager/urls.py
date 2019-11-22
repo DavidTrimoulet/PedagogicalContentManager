@@ -25,5 +25,20 @@ urlpatterns = [
     path('skill_rubricks/<str:verb>/<str:text>', SkillRubricksDetailView.as_view(), name="skill_rubricks-detail"),
     # Problems
     path('problems/', ProblemsView.as_view(), name="problems-all"),
-    path('problems/<str:text>', ProblemsDetailView.as_view(), name="keyword-detail")
+    path('problems/<str:title>', ProblemsDetailView.as_view(), name="keyword-detail"),
+    # Version
+    path('versions/', VersionView.as_view(), name="versions-all"),
+    path('versions/<str:problemTitle>', VersionDetailView.as_view(), name="versions-detail"),
+    # Solution
+    path('solutions/', SolutionView.as_view(), name="solutions-all"),
+    path('solutions/<str:problemTitle>', SolutionDetailView.as_view(), name="solutions-detail"),
+    # Validation
+    path('hints/', HintView.as_view(), name="hints-all"),
+    path('hints/<str:problemTitle>', HintDetailView.as_view(), name="hints-detail"),
+# Validation
+    path('validations/', ValidationView.as_view(), name="validations-all"),
+    path('validations/<str:problemTitle>', ValidationDetailView.as_view(), name="validations-detail"),
+# Validation
+    path('hypothesis/', HypothesisView.as_view(), name="hypothesis-all"),
+    path('Hypothesis/<str:problemTitle>', HypothesisDetailView.as_view(), name="hypothesis-detail")
 ]
