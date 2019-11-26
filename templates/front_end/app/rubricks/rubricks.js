@@ -4,7 +4,7 @@ angular.module('myApp.rubricks', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/rubricks', {
-            templateUrl: '/static/rubricks/rubricks.html',
+            templateUrl: '/static/app/rubricks/rubricks.html',
             controller: 'RubricksCtrl'
         });
     }])

@@ -3,7 +3,7 @@ angular.module('myApp.bloom', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/bloom', {
-            templateUrl: '/static/bloom/bloom.html',
+            templateUrl: '/static/app/bloom/bloom.html',
             controller: 'BloomCtrl'
         });
     }])

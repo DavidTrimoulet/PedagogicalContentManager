@@ -9,6 +9,7 @@
     "angular": "^1.7.5",
     "angular-loader": "^1.7.5",
     "angular-route": "^1.7.5",
+    "angular-ui-tinymce": "0.0.19",
     "html5-boilerplate": "0.0.1",
     "npm": "^6.13.1",
     "tinymce": "^5.1.2"

@@ -4,7 +4,7 @@ angular.module('myApp.skill', ['ngRoute', 'ngMaterial'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/skill', {
-            templateUrl: '/static/skill/skill.html',
+            templateUrl: '/static/app/skill/skill.html',
             controller: 'SkillCtrl'
         });
     }])

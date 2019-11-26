@@ -7,23 +7,21 @@
             md-search-text="ctrl.searchText"
             md-selected-item-change="ctrl.selectedItemChange(item)"
             md-items="item in ctrl.querySearch(ctrl.searchText)"
-            md-item-text="item"
+            md-item-text="item.title"
             md-min-length="0"
             placeholder="Problem Title ? ">
         <md-item-template>
-            <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i">{{ item }}</span>
+            <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i">{{ item.title }}</span>
         </md-item-template>
         <md-not-found>
             No verb matching "{{ ctrl.searchText }}" were found.
         </md-not-found>
     </md-autocomplete>
+    <form method="post">
+        <textarea ui-tinymce="tinymceOptions" ng-model="title"></textarea>
+        <textarea ui-tinymce="tinymceOptions" ng-model="text"></textarea>
+    </form>
+
 </div>
-<script type="text/javascript"> tinymce.init({selector: '#problemName'}); </script>
-<script type="text/javascript"> tinymce.init({selector: '#problemText'}); </script>
-<form method="post">
-    <textarea id="problemName" name="problemName">Hello, World!</textarea>
-</form>
-<form method="post">
-    <textarea id="problemText" name="problemText">Hello, World!</textarea>
-</form>
+
 

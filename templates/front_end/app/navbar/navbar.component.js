@@ -1,6 +1,6 @@
 angular.module('myApp.navBar', ['ngRoute'])
     .component('navBar', {
-        templateUrl: '/static/navbar/navbar.html',
+        templateUrl: '/static/app/navbar/navbar.html',
         controller: function NavbarController() {
             this.pages = [
                 {

@@ -74,7 +74,7 @@ TEMPLATES = [
 ]
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "templates/front_end/app/")
+    os.path.join(BASE_DIR, "templates/front_end/")
 ]
 
 WSGI_APPLICATION = 'PedagogicalContentManager.wsgi.application'

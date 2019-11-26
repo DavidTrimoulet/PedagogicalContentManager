@@ -1,32 +1,17 @@
 'use strict';
 
-angular.module('myApp.problem', ['ngRoute'])
+angular.module('myApp.problem', ['ngRoute', 'ui.tinymce'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/problem', {
-            templateUrl: '/static/problem/problem.html',
+            templateUrl: '/static/app/problem/problem.html',
             controller: 'ProblemCtrl'
         });
     }])
 
     .controller('ProblemCtrl', function ($scope, $http) {
-
-        $scope.updateData = getData;
-        function getData(ProblemTitle) {
-            if (ProblemTitle != "") {
-                $http({
-                    method: 'POST',
-                    url: 'http://127.0.0.1:8000/api/v1/problems/',
-                    data: {'title': ProblemTitle}
-                }).then(function successCallback(response) {
-                    $scope.problem = response.data;
-                }, function errorCallback(response) {
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
-                });
-            }
-
-        }
+        $scope.title = "";
+        $scope.text = "";
 
     });
 
@@ -38,30 +23,23 @@ function ProblemAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
     self.simulateQuery = false;
     self.isDisabled = false;
 
-    self.titles = [];
+    self.problems = [];
 
     self.querySearch = querySearch;
     self.selectedItemChange = selectedItemChange;
     self.update = update;
 
-    function getProblemsTitle() {
-        $http({
-                    method: 'GET',
-                    url: 'http://127.0.0.1:8000/api/v1/problems/'
-                }).then(function successCallback(response) {
-                    var problems = response.data;
-                    self.titles =  problems.map(getItemTitle);
-                }, function errorCallback(response) {
-                    // called asynchronously if an error occurs
-                    // or server returns response with a'autocomplete.skill'n error status.
-                });
-    }
 
-    getProblemsTitle();
-    function getItemTitle(item) {
-        $log.info("item:", item);
-        return item.title;
-    }
+    $http({
+        method: 'GET',
+        url: 'http://127.0.0.1:8000/api/v1/problems/'
+    }).then(function successCallback(response) {
+        self.problems = response.data;
+    }, function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with a'autocomplete.skill'n error status.
+    });
+
 
     function querySearch(query) {
         return findTitle(query);
@@ -69,13 +47,15 @@ function ProblemAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
 
     function selectedItemChange(item) {
         self.selectedItem = item;
-        $scope.updateData(item);
+        $log.info(item);
+        $scope.title = item.title;
+        $scope.text = item.text;
     }
 
     function findTitle(query) {
-        $log.info("titles:", self.titles);
-        return self.titles.filter(function (item) {
-         return item.includes(query);
+        $log.info("problems:", self.problems);
+        return self.problems.filter(function (item) {
+            return item.title.includes(query);
         });
     }
 
