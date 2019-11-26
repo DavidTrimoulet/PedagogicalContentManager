@@ -2,38 +2,85 @@
 
 angular.module('myApp.problem', ['ngRoute'])
 
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/problem', {
-    templateUrl: '/static/problem/problem.html',
-    controller: 'ProblemCtrl'
-  });
-}])
+    .config(['$routeProvider', function ($routeProvider) {
+        $routeProvider.when('/problem', {
+            templateUrl: '/static/problem/problem.html',
+            controller: 'ProblemCtrl'
+        });
+    }])
 
-.controller('ProblemCtrl', [function($scope, $http) {
-    $scope.title = getTitle; //models.CharField(max_length=256)
-    $scope.text = getText; //models.CharField(max_length=1024)
-    $scope.keyword = getKeywords; //models.ManyToManyField(KeyWord)
-    $scope.skill = getSkill; //models.ManyToManyField(Skill)
-    $scope.hint_and_advise = getHint;//models.OneToOneField(HintAndAdvise, on_delete='cascade', null=True)
-    $scope.action_plan = getActionPlan; //models.ManyToManyField(ActionPlan)
-    $scope.validation_questions = getValidationQuestion; //models.ManyToManyField(ValidationQuestion)
-    $scope.resources = getRessources; //models.ManyToManyField(Resource)
-    $scope.solution = getSolution; //models.ManyToManyField(Solution)
-    $scope.versions = getVersions; //models.ManyToManyField(Version)
-    function getHttpData(url) {
-      $http({
-                method: 'GET',
-                url: 'http://127.0.0.1:8000/api/v1/problem/'
-            }).then(function successCallback(response) {
-                var rubricks = response.data;
-                $scope.rubricks = rubricks.map(getItemKeyValue);
-                console.log("scope.rubricks :", $scope.rubricks);
-            }, function errorCallback(response) {
-                // called asynchronously if an error occurs
-                // or server returns response with an error status.
-            });
+    .controller('ProblemCtrl', function ($scope, $http) {
+
+        $scope.updateData = getData;
+        function getData(ProblemTitle) {
+            if (ProblemTitle != "") {
+                $http({
+                    method: 'POST',
+                    url: 'http://127.0.0.1:8000/api/v1/problems/',
+                    data: {'title': ProblemTitle}
+                }).then(function successCallback(response) {
+                    $scope.problem = response.data;
+                }, function errorCallback(response) {
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+            }
+
+        }
+
+    });
+
+angular.module('autocomplete.problem', ['ngMaterial'])
+    .controller('ProblemAutocompleteCtrl', ProblemAutocompleteCtrl);
+
+function ProblemAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
+    var self = this;
+    self.simulateQuery = false;
+    self.isDisabled = false;
+
+    self.titles = [];
+
+    self.querySearch = querySearch;
+    self.selectedItemChange = selectedItemChange;
+    self.update = update;
+
+    function getProblemsTitle() {
+        $http({
+                    method: 'GET',
+                    url: 'http://127.0.0.1:8000/api/v1/problems/'
+                }).then(function successCallback(response) {
+                    var problems = response.data;
+                    self.titles =  problems.map(getItemTitle);
+                }, function errorCallback(response) {
+                    // called asynchronously if an error occurs
+                    // or server returns response with a'autocomplete.skill'n error status.
+                });
     }
-    function getTitle() {
-      return getHttpData("");
+
+    getProblemsTitle();
+    function getItemTitle(item) {
+        $log.info("item:", item);
+        return item.title;
     }
-}]);
+
+    function querySearch(query) {
+        return findTitle(query);
+    }
+
+    function selectedItemChange(item) {
+        self.selectedItem = item;
+        $scope.updateData(item);
+    }
+
+    function findTitle(query) {
+        $log.info("titles:", self.titles);
+        return self.titles.filter(function (item) {
+         return item.includes(query);
+        });
+    }
+
+    function update() {
+
+
+    }
+}

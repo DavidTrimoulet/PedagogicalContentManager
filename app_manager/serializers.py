@@ -22,12 +22,13 @@ class BloomFamilySerializer(serializers.ModelSerializer):
 
 class BloomTaxonomySerializer(serializers.ModelSerializer):
     verb = serializers.SlugRelatedField(many=False, read_only=True, slug_field='verb')
-    family = serializers.SlugRelatedField(many=False,read_only=True, slug_field='family')
-    level = serializers.SlugRelatedField(many=False,read_only=True, slug_field='level')
+    family = serializers.SlugRelatedField(many=False, read_only=True, slug_field='family')
+    level = serializers.SlugRelatedField(many=False, read_only=True, slug_field='level')
 
     class Meta:
         model = BloomTaxonomy
         fields = '__all__'
+
 
 class SkillSerializer(serializers.ModelSerializer):
     taxonomy = BloomTaxonomySerializer(many=False, read_only=True)
@@ -36,6 +37,7 @@ class SkillSerializer(serializers.ModelSerializer):
         model = Skill
         fields = '__all__'
 
+
 class SkillRubricksSerializer(serializers.ModelSerializer):
     skill = SkillSerializer(many=False, read_only=True)
 
@@ -43,23 +45,24 @@ class SkillRubricksSerializer(serializers.ModelSerializer):
         model = SkillRubricks
         fields = '__all__'
 
-class KeywordSerializer(serializers.ModelSerializer):
 
+class KeywordSerializer(serializers.ModelSerializer):
     class Meta:
         model = KeyWord
         fields = '__all__'
 
-class ActionPlanSerializer(serializers.ModelSerializer):
 
+class ActionPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActionPlan
         fields = '__all__'
 
-class RessourceSerializer(serializers.ModelSerializer):
 
+class RessourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resource
         fields = '__all__'
+
 
 class ProblemSerializer(serializers.ModelSerializer):
     keyword = KeywordSerializer(many=True, read_only=True)
@@ -69,4 +72,33 @@ class ProblemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Problem
+        fields = '__all__'
+
+
+class VersionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Version
+        fields = '__all__'
+
+
+class SolutionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Solution
+        fields = '__all__'
+
+
+class HintSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HintAndAdvise
+        fields = '__all__'
+
+
+class ValidationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ValidationQuestion
+        fields = '__all__'
+
+class HypothesisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hypothesis
         fields = '__all__'

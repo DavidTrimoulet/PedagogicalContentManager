@@ -85,8 +85,8 @@ class AppManagerTest(BaseViewTest):
 
     def test_post_one_bloom_verb_with_pk_1(self):
         response = self.client.post(
-            reverse("bloom_verb-detail", kwargs={"version": "v1", "pk": "1"})
-        )
+            reverse("bloom_verb-all", kwargs={"version": "v1"}),
+            data=json.dumps({"pk": "1"}), content_type='application/json')
         expected = BloomVerb.objects.get(pk=1)
         serialized = BloomVerbSerializer(expected, many=False)
         self.assertEqual(response.data, serialized.data)
@@ -94,8 +94,8 @@ class AppManagerTest(BaseViewTest):
 
     def test_post_one_bloom_verb_with_pk_10(self):
         response = self.client.post(
-            reverse("bloom_verb-detail", kwargs={"version": "v1", "pk": "10"})
-        )
+            reverse("bloom_verb-all", kwargs={"version": "v1"}),
+            data=json.dumps({"pk": "10"}), content_type='application/json')
         expected = status.HTTP_404_NOT_FOUND
         self.assertEqual(response.status_code, expected)
 # Bloom Level
@@ -118,8 +118,8 @@ class AppManagerTest(BaseViewTest):
 
     def test_post_one_bloom_level_with_pk_1(self):
         response = self.client.post(
-            reverse("bloom_level-detail", kwargs={"version": "v1", "pk": "1"})
-        )
+            reverse("bloom_level-all", kwargs={"version": "v1"}),
+            data=json.dumps({"pk": "1"}), content_type='application/json')
         expected = BloomLevel.objects.get(pk=1)
         serialized = BloomLevelSerializer(expected, many=False)
         self.assertEqual(response.data, serialized.data)
@@ -127,8 +127,8 @@ class AppManagerTest(BaseViewTest):
 
     def test_post_one_bloom_level_with_pk_10(self):
         response = self.client.post(
-            reverse("bloom_level-detail", kwargs={"version": "v1", "pk": "10"})
-        )
+            reverse("bloom_level-all", kwargs={"version": "v1"}),
+            data=json.dumps({"pk": "10"}), content_type='application/json')
         expected = status.HTTP_404_NOT_FOUND
         self.assertEqual(response.data["message"], "BloomLevel with id: 10 does not exist")
         self.assertEqual(response.status_code, expected)
@@ -153,8 +153,8 @@ class AppManagerTest(BaseViewTest):
 
     def test_post_one_bloom_family_with_pk_1(self):
         response = self.client.post(
-            reverse("bloom_families-detail", kwargs={"version": "v1", "pk": "1"})
-        )
+            reverse("bloom_families-all", kwargs={"version": "v1"}),
+            data=json.dumps({"pk": "1"}), content_type='application/json')
         expected = BloomFamily.objects.get(pk=1)
         serialized = BloomFamilySerializer(expected, many=False)
         self.assertEqual(response.data, serialized.data)
@@ -162,8 +162,8 @@ class AppManagerTest(BaseViewTest):
 
     def test_post_one_bloom_family_with_pk_10(self):
         response = self.client.post(
-            reverse("bloom_families-detail", kwargs={"version": "v1", "pk": "10"})
-        )
+            reverse("bloom_families-all", kwargs={"version": "v1"}),
+            data=json.dumps({"pk": "10"}), content_type='application/json')
         expected = status.HTTP_404_NOT_FOUND
         self.assertEqual(response.data["message"], "BloomFamily with id: 10 does not exist")
         self.assertEqual(response.status_code, expected)
@@ -190,8 +190,8 @@ class AppManagerTest(BaseViewTest):
 
     def test_post_one_bloom_taxonomy_with_verb_(self):
         response = self.client.post(
-            reverse("bloom_taxonomies-detail", kwargs={"version": "v1", "verb": "Conceive"})
-        )
+            reverse("bloom_taxonomies-all", kwargs={"version": "v1"}),
+            data=json.dumps({"verb": "Conceive"}), content_type='application/json')
         expected = BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb="Conceive"))
         serialized = BloomTaxonomySerializer(expected, many=False)
         self.assertEqual(response.data, serialized.data)
@@ -199,8 +199,8 @@ class AppManagerTest(BaseViewTest):
 
     def test_post_one_bloom_taxonomy_with_verb_Test(self):
         response = self.client.post(
-            reverse("bloom_taxonomies-detail", kwargs={"version": "v1", "verb": "Test"})
-        )
+            reverse("bloom_taxonomies-all", kwargs={"version": "v1"}),
+            data=json.dumps({"verb": "Test"}), content_type='application/json')
         expected = status.HTTP_404_NOT_FOUND
         self.assertEqual(response.data["message"], "BloomTaxonomy verb : Test does not exist")
         self.assertEqual(response.status_code, expected)
@@ -230,8 +230,8 @@ class AppManagerTest(BaseViewTest):
 
     def test_post_one_skill_with_verb_Explain(self):
         response = self.client.post(
-            reverse("skill-detail", kwargs={"version": "v1", "verb": "Explain"})
-        )
+            reverse("skill-all", kwargs={"version": "v1"}),
+            data=json.dumps({"verb": "Explain"}), content_type='application/json')
         expected = Skill.objects.get(taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb="Explain")))
         serialized = SkillSerializer(expected, many=False)
         self.assertEqual(response.data, serialized.data)
@@ -239,8 +239,8 @@ class AppManagerTest(BaseViewTest):
 
     def test_post_one_skill_with_verb_complain(self):
         response = self.client.post(
-            reverse("skill-detail", kwargs={"version": "v1", "verb": "Complain"})
-        )
+            reverse("skill-all", kwargs={"version": "v1"}),
+            data=json.dumps({"verb": "Complain"}), content_type='application/json')
         expected = status.HTTP_404_NOT_FOUND
         self.assertEqual(response.data["message"], "Skill with verb Complain does not exist")
         self.assertEqual(response.status_code, expected)
@@ -274,8 +274,8 @@ class AppManagerTest(BaseViewTest):
 
     def test_post_one_skill_rubricks_with_skill_Explain_electronic_elementary_component_behaviour(self):
         response = self.client.post(
-            reverse("skill_rubricks-detail", kwargs={"version": "v1", "verb": "Explain", "text": "elementary embedded systems"})
-        )
+            reverse("skill_rubricks-all", kwargs={"version": "v1"}),
+            data=json.dumps({"verb": "Explain", "text": "elementary embedded systems"}), content_type='application/json')
         expected = SkillRubricks.objects.get(skill=Skill.objects.get(taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb="Explain")), text="elementary embedded systems"))
         serialized = SkillRubricksSerializer(expected, many=False)
         self.assertEqual(response.data, serialized.data)
@@ -283,8 +283,8 @@ class AppManagerTest(BaseViewTest):
 
     def test_post_one_skill_rubricks_with_verb_complain(self):
         response = self.client.post(
-            reverse("skill_rubricks-detail", kwargs={"version": "v1", "verb": "Describe", "text": "elementary embedded systems"})
-        )
+            reverse("skill_rubricks-all", kwargs={"version": "v1"}),
+            data=json.dumps({"verb": "Describe", "text": "elementary embedded systems"}), content_type='application/json')
         expected = status.HTTP_404_NOT_FOUND
         self.assertEqual(response.data["message"], "SkillRubricks with verb Describe does not exist")
         self.assertEqual(response.status_code, expected)

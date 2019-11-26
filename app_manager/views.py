@@ -8,8 +8,8 @@ from .models import *
 from .serializers import *
 from rest_framework.response import Response
 
-class BloomVerbView(generics.ListAPIView):
 
+class BloomVerbView(generics.ListAPIView):
     queryset = BloomVerb.objects.all()
     serializer_class = BloomVerbSerializer
 
@@ -21,29 +21,20 @@ class BloomVerbView(generics.ListAPIView):
         bloom_verb.save()
         return Response(data=self.serializer_class(bloom_verb).data, status=status.HTTP_201_CREATED)
 
-
-class BloomVerbDetailView(generics.ListAPIView):
-    """
-    Provides a get method handler.
-    """
-    serializer_class = BloomVerbSerializer
-    queryset = BloomVerb.objects.all()
-
     def post(self, request, *args, **kwargs):
-        try :
-            bloom_verb = self.queryset.get(pk=kwargs["pk"])
+        try:
+            bloom_verb = self.queryset.get(pk=request.data["pk"])
             return Response(self.serializer_class(bloom_verb).data)
         except ObjectDoesNotExist:
             return Response(
                 data={
-                    "message": "BloomVerb with id: {} does not exist".format(kwargs["pk"])
+                    "message": "BloomVerb with id: {} does not exist".format(request.data["pk"])
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
 
 
 class BloomLevelView(generics.ListAPIView):
-
     queryset = BloomLevel.objects.all()
     serializer_class = BloomLevelSerializer
 
@@ -55,27 +46,19 @@ class BloomLevelView(generics.ListAPIView):
         bloom_level.save()
         return Response(data=self.serializer_class(bloom_level).data, status=status.HTTP_201_CREATED)
 
-
-class BloomLevelDetailView(generics.ListAPIView):
-
-    queryset = BloomLevel.objects.all()
-    serializer_class = BloomLevelSerializer
-
     def post(self, request, *args, **kwargs):
         try:
-            bloom_level = self.queryset.get(pk=kwargs["pk"])
+            bloom_level = self.queryset.get(pk=request.data["pk"])
             return Response(self.serializer_class(bloom_level).data)
         except ObjectDoesNotExist:
             return Response(
                 data={
-                    "message": "BloomLevel with id: {} does not exist".format(kwargs["pk"])
+                    "message": "BloomLevel with id: {} does not exist".format(request.data["pk"])
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
 
-
 class BloomFamilyView(generics.ListAPIView):
-
     queryset = BloomFamily.objects.all()
     serializer_class = BloomFamilySerializer
 
@@ -87,27 +70,20 @@ class BloomFamilyView(generics.ListAPIView):
         bloom_family.save()
         return Response(data=self.serializer_class(bloom_family).data, status=status.HTTP_201_CREATED)
 
-
-class BloomFamilyDetailView(generics.ListAPIView):
-
-    queryset = BloomFamily.objects.all()
-    serializer_class = BloomFamilySerializer
-
     def post(self, request, *args, **kwargs):
         try:
-            bloom_family = self.queryset.get(pk=kwargs["pk"])
+            bloom_family = self.queryset.get(pk=request.data["pk"])
             return Response(self.serializer_class(bloom_family).data)
         except ObjectDoesNotExist:
             return Response(
                 data={
-                    "message": "BloomFamily with id: {} does not exist".format(kwargs["pk"])
+                    "message": "BloomFamily with id: {} does not exist".format(request.data["pk"])
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
 
 
 class BloomTaxonomyView(generics.ListAPIView):
-
     queryset = BloomTaxonomy.objects.all()
     serializer_class = BloomTaxonomySerializer
 
@@ -122,26 +98,20 @@ class BloomTaxonomyView(generics.ListAPIView):
         bloom_taxonomy.save()
         return Response(data=BloomTaxonomySerializer(bloom_taxonomy).data, status=status.HTTP_201_CREATED)
 
-
-class BloomTaxonomyDetailView(generics.ListAPIView):
-
-    serializer_class = BloomTaxonomySerializer
-
     def post(self, request, *args, **kwargs):
-        try :
-            bloom_taxonomy = BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=kwargs["verb"]))
+        try:
+            bloom_taxonomy = BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=request.data["verb"]))
             return Response(BloomTaxonomySerializer(bloom_taxonomy).data)
         except ObjectDoesNotExist:
             return Response(
                 data={
-                    "message": "BloomTaxonomy verb : {} does not exist".format(kwargs["verb"])
+                    "message": "BloomTaxonomy verb : {} does not exist".format(request.data["verb"])
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
 
 
 class SkillView(generics.ListAPIView):
-
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
 
@@ -155,25 +125,21 @@ class SkillView(generics.ListAPIView):
         skill.save()
         return Response(data=SkillSerializer(skill).data, status=status.HTTP_201_CREATED)
 
-
-class SkillDetailView(generics.ListAPIView):
-    serializer_class = SkillSerializer
-
     def post(self, request, *args, **kwargs):
-        try :
-            skill = Skill.objects.get(taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=kwargs["verb"])))
+        try:
+            skill = Skill.objects.get(
+                taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=request.data["verb"])))
             return Response(self.serializer_class(skill).data)
         except ObjectDoesNotExist:
             return Response(
                 data={
-                    "message": "Skill with verb {} does not exist".format(kwargs["verb"])
+                    "message": "Skill with verb {} does not exist".format(request.data["verb"])
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
 
 
 class SkillRubricksView(generics.ListAPIView):
-
     queryset = SkillRubricks.objects.all()
     serializer_class = SkillRubricksSerializer
 
@@ -181,36 +147,36 @@ class SkillRubricksView(generics.ListAPIView):
         return Response(data=self.serializer_class(self.queryset.all(), many=True).data, status=status.HTTP_200_OK)
 
     def put(self, request, *args, **kwargs):
-        skill, skill_created = Skill.objects.get_or_create(taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=request.data["verb"])), text=request.data["text"])
+        skill, skill_created = Skill.objects.get_or_create(
+            taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=request.data["verb"])),
+            text=request.data["text"])
         skill_rubricks, created = SkillRubricks.objects.get_or_create(skill=skill)
-        skill_rubricks.level_A=request.data["level_A"]
-        skill_rubricks.level_B=request.data["level_B"]
-        skill_rubricks.level_C=request.data["level_C"]
-        skill_rubricks.level_D=request.data["level_D"]
+        skill_rubricks.level_A = request.data["level_A"]
+        skill_rubricks.level_B = request.data["level_B"]
+        skill_rubricks.level_C = request.data["level_C"]
+        skill_rubricks.level_D = request.data["level_D"]
         skill_rubricks.save()
-        if created :
+        if created:
             return Response(data=SkillRubricksSerializer(skill_rubricks).data, status=status.HTTP_201_CREATED)
-        else :
+        else:
             return Response(data=SkillRubricksSerializer(skill_rubricks).data, status=status.HTTP_200_OK)
 
-
-class SkillRubricksDetailView(generics.ListAPIView):
-    serializer_class = SkillRubricksSerializer
-
     def post(self, request, *args, **kwargs):
-        try :
-            skill_rubricks = SkillRubricks.objects.get(skill=Skill.objects.get(taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=kwargs["verb"])), text=kwargs["text"]))
+        try:
+            skill_rubricks = SkillRubricks.objects.get(skill=Skill.objects.get(
+                taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=request.data["verb"])),
+                text=request.data["text"]))
             return Response(self.serializer_class(skill_rubricks).data)
         except ObjectDoesNotExist:
             return Response(
                 data={
-                    "message": "SkillRubricks with verb {} does not exist".format(kwargs["verb"])
+                    "message": "SkillRubricks with verb {} does not exist".format(request.data["verb"])
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
 
-class ProblemsView(generics.ListAPIView):
 
+class ProblemsView(generics.ListAPIView):
     queryset = Problem.objects.all()
     serializer_class = ProblemSerializer
 
@@ -220,14 +186,125 @@ class ProblemsView(generics.ListAPIView):
     def put(self, request, *args, **kwargs):
         pass
 
+    def post(self, request, *args, **kwargs):
+        try:
+            problem = Problem.objects.get(title=request.data['title'])
+            return Response(self.serializer_class(problem).data)
+        except ObjectDoesNotExist:
+            return Response(
+                data={
+                    "message": "Problem with title \"{}\" does not exist".format(kwargs["title"])
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
 
-class ProblemsDetailView(generics.ListAPIView):
-    serializer_class = ProblemSerializer
+
+class VersionView(generics.ListAPIView):
+    queryset = Version.objects.all()
+    serializer_class = VersionSerializer
+
+    def get(self, request, *args, **kwargs):
+        return Response(data=self.serializer_class(self.queryset.all(), many=True).data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        pass
 
     def post(self, request, *args, **kwargs):
-        try :
-            problem = Problem.objects.get(title=kwargs["title"])
-            return Response(self.serializer_class(problem).data)
+        try:
+            version = Version.objects.get(problem=Problem.objects.get(title=kwargs["problemTitle"]).id)
+            return Response(self.serializer_class(version).data)
+        except ObjectDoesNotExist:
+            return Response(
+                data={
+                    "message": "Problem with title \"{}\" does not exist".format(kwargs["title"])
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class SolutionView(generics.ListAPIView):
+    queryset = Solution.objects.all()
+    serializer_class = SolutionSerializer
+
+    def get(self, request, *args, **kwargs):
+        return Response(data=self.serializer_class(self.queryset.all(), many=True).data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        try:
+            solution = Solution.objects.get(problem=Problem.objects.get(title=kwargs["problemTitle"]).id)
+            return Response(self.serializer_class(solution).data)
+        except ObjectDoesNotExist:
+            return Response(
+                data={
+                    "message": "Problem with title \"{}\" does not exist".format(kwargs["title"])
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+class HintView(generics.ListAPIView):
+    queryset = HintAndAdvise.objects.all()
+    serializer_class = HintSerializer
+
+    def get(self, request, *args, **kwargs):
+        return Response(data=self.serializer_class(self.queryset.all(), many=True).data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        try:
+            hint = HintAndAdvise.objects.get(problem=Problem.objects.get(title=kwargs["problemTitle"]).id)
+            return Response(self.serializer_class(hint).data)
+        except ObjectDoesNotExist:
+            return Response(
+                data={
+                    "message": "Problem with title \"{}\" does not exist".format(kwargs["title"])
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class ValidationView(generics.ListAPIView):
+    queryset = ValidationQuestion.objects.all()
+    serializer_class = ValidationSerializer
+
+    def get(self, request, *args, **kwargs):
+        return Response(data=self.serializer_class(self.queryset.all(), many=True).data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        pass
+
+
+    def post(self, request, *args, **kwargs):
+        try:
+            validation = ValidationQuestion.objects.get(problem=Problem.objects.get(title=kwargs["problemTitle"]).id)
+            return Response(self.serializer_class(validation).data)
+        except ObjectDoesNotExist:
+            return Response(
+                data={
+                    "message": "Problem with title \"{}\" does not exist".format(kwargs["title"])
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class HypothesisView(generics.ListAPIView):
+    queryset = Hypothesis.objects.all()
+    serializer_class = HypothesisSerializer
+
+    def get(self, request, *args, **kwargs):
+        return Response(data=self.serializer_class(self.queryset.all(), many=True).data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        try:
+            hypothesis = Hypothesis.objects.get(problem=Problem.objects.get(title=kwargs["problemTitle"]).id)
+            return Response(self.serializer_class(hypothesis).data)
         except ObjectDoesNotExist:
             return Response(
                 data={
