@@ -42,7 +42,7 @@ angular.module('myApp.problem', ['ngRoute', 'ui.tinymce'])
             }
         };
         $scope.update = function ($http, $scope) {
-            
+
         }
     });
 
@@ -79,8 +79,7 @@ function ProblemAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
     function selectedItemChange(item) {
         self.selectedItem = item;
         $log.info(item);
-        $scope.title = item.title;
-        $scope.text = item.text;
+        $scope.problem = item;
     }
 
     function findTitle(query) {
