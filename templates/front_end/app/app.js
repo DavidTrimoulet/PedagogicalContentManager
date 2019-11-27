@@ -13,11 +13,9 @@ angular.module('myApp', [
     'autocomplete.bloom',
     'autocomplete.skill',
     'autocomplete.problem'
-]).config(['$locationProvider', '$routeProvider', '$httpProvider', function ($locationProvider, $routeProvider,$httpProvider) {
+]).config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider,$httpProvider) {
     $locationProvider.hashPrefix('!');
     $routeProvider.otherwise({redirectTo: '/home'});
-    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
-    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 }]);
 
 angular.module('sideComponent', []);

@@ -83,6 +83,9 @@ WSGI_APPLICATION = 'PedagogicalContentManager.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',

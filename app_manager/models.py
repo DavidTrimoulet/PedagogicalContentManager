@@ -157,4 +157,6 @@ class Project(models.Model):
     project_milestones = models.ManyToManyField(Milestone)
     project_versions = models.ManyToManyField(Version)
 
-
+class Post(models.Model):
+    title = models.TextField()
+    cover = models.ImageField(upload_to='images/')

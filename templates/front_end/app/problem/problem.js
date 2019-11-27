@@ -2,17 +2,48 @@
 
 angular.module('myApp.problem', ['ngRoute', 'ui.tinymce'])
 
-    .config(['$routeProvider', function ($routeProvider) {
+    .config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
         $routeProvider.when('/problem', {
             templateUrl: '/static/app/problem/problem.html',
             controller: 'ProblemCtrl'
         });
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     }])
 
-    .controller('ProblemCtrl', function ($scope, $http) {
+    .controller('ProblemCtrl', function ($scope, $http, $log) {
         $scope.title = "";
         $scope.text = "";
-
+        $scope.tinymceOptions = {
+            plugins: 'link image code',
+            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
+            //images_upload_url: 'api/v1/uploadImage/'
+            images_upload_handler: function (blobInfo, success, failure) {
+                $log.info("blob", blobInfo.blob());
+                //var dataToSend = { 'filename':blobInfo.blob().name };
+                var formData = new FormData();
+                formData.append('image', blobInfo.blob(), blobInfo.blob().name );
+                $log.info(formData);
+                $http({
+                    method: 'POST',
+                    url: 'http://127.0.0.1:8000/api/v1/uploadImage/',
+                    transformRequest: angular.identity,
+                    headers: {
+                        'Content-Type': undefined
+                    },
+                    data: formData
+                }).then(function successCallback(response) {
+                    success( response.data['url'] );
+                }, function errorCallback(response) {
+                    failure();
+                    // called asynchronously if an error occurs
+                    // or server returns response with a'autocomplete.skill'n error status.
+                });
+            }
+        };
+        $scope.update = function ($http, $scope) {
+            
+        }
     });
 
 angular.module('autocomplete.problem', ['ngMaterial'])

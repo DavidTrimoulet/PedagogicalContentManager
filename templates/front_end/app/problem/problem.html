@@ -17,9 +17,9 @@
             No verb matching "{{ ctrl.searchText }}" were found.
         </md-not-found>
     </md-autocomplete>
-    <form method="post">
-        <textarea ui-tinymce="tinymceOptions" ng-model="title"></textarea>
-        <textarea ui-tinymce="tinymceOptions" ng-model="text"></textarea>
+    <form enctype="multipart/form-data" method="POST"> {% csrf_token %}
+        <textarea ui-tinymce="tinymceOptions" ng-model="title" ng-change="update()"></textarea>
+        <textarea ui-tinymce="tinymceOptions" ng-model="text" ng-change="update()"></textarea>
     </form>
 
 </div>

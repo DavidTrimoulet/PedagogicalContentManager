@@ -1,3 +1,4 @@
+from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from rest_framework.views import status
 from django.core.exceptions import ObjectDoesNotExist
@@ -57,6 +58,7 @@ class BloomLevelView(generics.ListAPIView):
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
+
 
 class BloomFamilyView(generics.ListAPIView):
     queryset = BloomFamily.objects.all()
@@ -244,6 +246,7 @@ class SolutionView(generics.ListAPIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
+
 class HintView(generics.ListAPIView):
     queryset = HintAndAdvise.objects.all()
     serializer_class = HintSerializer
@@ -276,7 +279,6 @@ class ValidationView(generics.ListAPIView):
 
     def put(self, request, *args, **kwargs):
         pass
-
 
     def post(self, request, *args, **kwargs):
         try:
@@ -312,3 +314,15 @@ class HypothesisView(generics.ListAPIView):
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
+
+
+class UploadImage(generics.ListAPIView):
+
+    def post(self, request, *args, **kwargs):
+        print("data ", request.FILES['image'])
+        print(request.data['image'])
+        myfile = request.FILES['image']
+        fs = FileSystemStorage()
+        filename = fs.save(myfile.name, myfile)
+        uploaded_file_url = fs.url( filename)
+        return Response(data={"url": uploaded_file_url}, status=status.HTTP_201_CREATED);

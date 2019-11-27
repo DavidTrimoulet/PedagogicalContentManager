@@ -3,7 +3,6 @@ from django.urls import path
 from . import views
 from .views import *
 
-
 urlpatterns = [
     # Bloom Verbs
     path('bloom_verbs/', BloomVerbView.as_view(), name="bloom_verb-all"),
@@ -25,8 +24,10 @@ urlpatterns = [
     path('solutions/', SolutionView.as_view(), name="solutions-all"),
     # Validation
     path('hints/', HintView.as_view(), name="hints-all"),
-# Validation
+    # Validation
     path('validations/', ValidationView.as_view(), name="validations-all"),
-# Validation
-    path('hypothesis/', HypothesisView.as_view(), name="hypothesis-all")
+    # Validation
+    path('hypothesis/', HypothesisView.as_view(), name="hypothesis-all"),
+    # Image Upload
+    path('uploadImage/', UploadImage.as_view(), name="upload-image")
 ]
