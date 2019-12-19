@@ -5,6 +5,7 @@ from .models import *
 from .serializers import *
 from rest_framework.views import status
 
+
 # tests for views
 class BaseViewTest(APITestCase):
     client = APIClient()
@@ -64,9 +65,10 @@ class BaseViewTest(APITestCase):
     def tearDownClass(cls):
         pass
 
+
 class AppManagerTest(BaseViewTest):
 
-# Bloom verb
+    # Bloom verb
     def test_put_one_bloom_verb(self):
         response = self.client.put(
             reverse('bloom_verb-all', kwargs={'version': "v1"}), data=json.dumps({"verb": "Explain"}), content_type='application/json')
@@ -98,7 +100,8 @@ class AppManagerTest(BaseViewTest):
             data=json.dumps({"pk": "10"}), content_type='application/json')
         expected = status.HTTP_404_NOT_FOUND
         self.assertEqual(response.status_code, expected)
-# Bloom Level
+
+    # Bloom Level
     def test_put_one_bloom_level(self):
         response = self.client.put(
             reverse('bloom_level-all', kwargs={'version': "v1"}), data=json.dumps({"level": "Level3"}), content_type='application/json')
@@ -133,7 +136,7 @@ class AppManagerTest(BaseViewTest):
         self.assertEqual(response.data["message"], "BloomLevel with id: 10 does not exist")
         self.assertEqual(response.status_code, expected)
 
-# Bloom Family
+    # Bloom Family
     def test_put_one_bloom_family(self):
         response = self.client.put(
             reverse('bloom_families-all', kwargs={'version': "v1"}), data=json.dumps({"family": "Evaluate"}), content_type='application/json')
@@ -168,7 +171,7 @@ class AppManagerTest(BaseViewTest):
         self.assertEqual(response.data["message"], "BloomFamily with id: 10 does not exist")
         self.assertEqual(response.status_code, expected)
 
-# Bloom Taxonomy
+    # Bloom Taxonomy
     def test_put_one_bloom_taxonomy(self):
         response = self.client.put(
             reverse('bloom_taxonomies-all', kwargs={'version': "v1"}), data=json.dumps({"level": "Level4", "verb": "Create", "family":"Analyse"}), content_type='application/json')
@@ -204,9 +207,8 @@ class AppManagerTest(BaseViewTest):
         expected = status.HTTP_404_NOT_FOUND
         self.assertEqual(response.data["message"], "BloomTaxonomy verb : Test does not exist")
         self.assertEqual(response.status_code, expected)
-        
-        
-# Skill
+
+    # Skill
     def test_put_one_skill(self):
         response = self.client.put(
             reverse('skill-all', kwargs={"version": "v1"}),
@@ -245,7 +247,7 @@ class AppManagerTest(BaseViewTest):
         self.assertEqual(response.data["message"], "Skill with verb Complain does not exist")
         self.assertEqual(response.status_code, expected)
 
-# Skill Rubriks
+    # Skill Rubriks
     def test_put_one_skill_rubriks(self):
         response = self.client.put(
             reverse('skill_rubricks-all', kwargs={"version": "v1"}),
@@ -289,4 +291,3 @@ class AppManagerTest(BaseViewTest):
         self.assertEqual(response.data["message"], "SkillRubricks with verb Describe does not exist")
         self.assertEqual(response.status_code, expected)
 
-#

@@ -17,5 +17,4 @@ angular.module('myApp', [
     $locationProvider.hashPrefix('!');
     $routeProvider.otherwise({redirectTo: '/home'});
 }]);
-
 angular.module('sideComponent', []);

@@ -21,7 +21,7 @@
         <textarea ui-tinymce="tinymceOptions" ng-model="problem.title" ng-change="update()"></textarea>
         <textarea ui-tinymce="tinymceOptions" ng-model="problem.text" ng-change="update()"></textarea>
         <h2>Keywords</h2>
-        <div ng-repeat="keyword in problem.keyword" class="inline-group">
+        <!-- <div ng-repeat="keyword in problem.keyword" class="inline-group">
             <label>{{ keyword.keyword }} : </label>
             <label>{{ keyword.definition }}</label>
             <img class="fit-picture" src="{{ keyword.definition_schema }}">
@@ -34,7 +34,7 @@
         <h2>Plan d'action</h2>
         <div ng-repeat="step in problem.action_plan" class="inline-group">
             <label>{{ step.action_plan_steps }}</label>
-        </div>
+        </div> -->
     </form>
 
 </div>

@@ -17,33 +17,12 @@ angular.module('myApp.problem', ['ngRoute', 'ui.tinymce'])
         $scope.tinymceOptions = {
             plugins: 'link image code',
             toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
-            //images_upload_url: 'api/v1/uploadImage/'
-            images_upload_handler: function (blobInfo, success, failure) {
-                $log.info("blob", blobInfo.blob());
-                //var dataToSend = { 'filename':blobInfo.blob().name };
-                var formData = new FormData();
-                formData.append('image', blobInfo.blob(), blobInfo.blob().name );
-                $log.info(formData);
-                $http({
-                    method: 'POST',
-                    url: 'http://127.0.0.1:8000/api/v1/uploadImage/',
-                    transformRequest: angular.identity,
-                    headers: {
-                        'Content-Type': undefined
-                    },
-                    data: formData
-                }).then(function successCallback(response) {
-                    success( response.data['url'] );
-                }, function errorCallback(response) {
-                    failure();
-                    // called asynchronously if an error occurs
-                    // or server returns response with a'autocomplete.skill'n error status.
-                });
-            }
+
         };
         $scope.update = function ($http, $scope) {
 
-        }
+        };
+        $log.info("tinymce controller loaded");
     });
 
 angular.module('autocomplete.problem', ['ngMaterial'])

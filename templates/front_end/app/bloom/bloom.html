@@ -1,19 +1,23 @@
 <p>This is the bloom taxonomy view.</p>
-<table class="table">
-    <thead class="thead-dark">
-        <tr><th ng-repeat="family in taxonomies_head"> {{ family }}</th></tr>
-    </thead>
-    <tbody>
+<div class="container">
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col" ng-repeat="family in taxonomies_head"> {{ family }}</th>
+        </tr>
+        </thead>
+        <tbody>
         <tr ng-repeat="line in taxonomies_data track by $index">
-            <td ng-repeat="val in line track by $index"> {{val}} </td>
+            <td ng-repeat="val in line track by $index"> {{ val }} </td>
         </tr>
         <tr>
             <td ng-repeat="family in taxonomies_head track by $index">
                 <ng-form class="form-inline" name="form.addTaxonomyForm">
-                    <div class="input-group">
-                        <input type="text" ng-model="taxonomy[$index]" />
+                    <div class="input-group mb-3">
+                        <input class="container-fluid" type="text" ng-model="taxonomy[$index]"/>
                         <span class="input-group-append">
-                            <button class="btn btn-success" type="submit" ng-click="update(taxonomy[$index], $index )" value="Save">
+                            <button class="btn btn-success" type="submit" ng-click="update(taxonomy[$index], $index )"
+                                    value="Save">
                                 <span class="glyphicon glyphicon-plus"></span>
                             </button>
                         </span>
@@ -21,6 +25,7 @@
                 </ng-form>
             </td>
         </tr>
-    </tbody>
+        </tbody>
 
-</table>
+    </table>
+</div>
