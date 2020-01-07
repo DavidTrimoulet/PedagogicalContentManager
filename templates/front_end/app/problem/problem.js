@@ -22,6 +22,48 @@ angular.module('myApp.problem', ['ngRoute', 'ui.tinymce'])
         $scope.update = function ($http, $scope) {
 
         };
+        $scope.getProblemContent = function (title) {
+            $log.info("getting data for " + title);
+            $http({
+                method: 'POST',
+                url: 'http://127.0.0.1:8000/api/v1/problems/',
+                data: {'problem': title}
+            }).then(function successCallback(response) {
+                $log.info("getting problem content");
+                $scope.problemContent = response.data;
+            }, function errorCallback(response) {
+                // called asynchronously if an error occurs
+                // or server returns response with a'autocomplete.skill'n error status.
+            });
+        };
+        $scope.updateProblemContent = function () {
+            $log.info("updating content");
+            $http({
+                method: 'PUT',
+                url: 'http://127.0.0.1:8000/api/v1/problems/',
+                data: $scope.problemContent.text
+            }).then(function successCallback(response) {
+                $log.info("getting problem content");
+                $scope.problemContent = response.data;
+            }, function errorCallback(response) {
+                // called asynchronously if an error occurs
+                // or server returns response with a'autocomplete.skill'n error status.
+            });
+        };
+        $scope.updateProblemTitle = function () {
+            $log.info("updating Title");
+            $http({
+                method: 'PUT',
+                url: 'http://127.0.0.1:8000/api/v1/problems/',
+                data: $scope.problemContent.title
+            }).then(function successCallback(response) {
+                $log.info("getting problem content");
+                $scope.problemContent = response.data;
+            }, function errorCallback(response) {
+                // called asynchronously if an error occurs
+                // or server returns response with a'autocomplete.skill'n error status.
+            });
+        };
         $log.info("tinymce controller loaded");
     });
 
@@ -35,19 +77,6 @@ function ProblemAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
 
     self.problems = [];
     self.problemContent = [];
-    self.getProblemContent = function () {
-        $http({
-            method: 'POST',
-            url: 'http://127.0.0.1:8000/api/v1/problems/',
-            data: { 'problem': self.selectedItem.title }
-        }).then(function successCallback(response) {
-            $log.info("getting problem content");
-            self.problemContent = response.data;
-        }, function errorCallback(response) {
-            // called asynchronously if an error occurs
-            // or server returns response with a'autocomplete.skill'n error status.
-        });
-    }
     self.querySearch = querySearch;
     self.selectedItemChange = selectedItemChange;
     self.update = update;
@@ -70,7 +99,7 @@ function ProblemAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
 
     function selectedItemChange(item) {
         self.selectedItem = item;
-        self.getProblemContent();
+        $scope.getProblemContent(item.title);
     }
 
     function findTitle(query) {

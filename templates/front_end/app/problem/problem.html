@@ -19,9 +19,9 @@
     </md-autocomplete>
     <form enctype="multipart/form-data" method="POST">
         <h2>Title</h2>
-        <textarea ui-tinymce="tinymceOptions" ng-model="problemContent.title" ng-change="update()"></textarea>
+        <textarea ui-tinymce="tinymceOptions" ng-model="problemContent.title" ng-change="updateProblemTitle()"></textarea>
         <h2>Text</h2>
-        <textarea ui-tinymce="tinymceOptions" ng-model="problemContent.text" ng-change="update()"></textarea>
+        <textarea ui-tinymce="tinymceOptions" ng-model="problemContent.text" ng-change="updateProblemContent()"></textarea>
         <h2>Keywords</h2>
         <div ng-repeat="keyword in problemContent.keyword" class="inline-group">
             <label>{{ keyword.keyword }} : </label>

@@ -189,9 +189,9 @@ class ProblemsView(generics.ListAPIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            problem_content, created = ProblemContent.objects.get_or_create(problem=Problem.objects.get(title=request.data['problem']))
-            print(problem_content)
-            return Response(data=ProblemContentSerializer(problem_content).data , status=status.HTTP_201_CREATED)
+            problem_content, created = ProblemContent.objects.get_or_create(
+                problem=Problem.objects.get(title=request.data['problem']))
+            return Response(data=ProblemContentSerializer(problem_content).data, status=status.HTTP_201_CREATED)
         except ObjectDoesNotExist:
             return Response(
                 data={
