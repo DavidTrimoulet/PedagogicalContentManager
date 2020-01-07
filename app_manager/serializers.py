@@ -65,13 +65,20 @@ class RessourceSerializer(serializers.ModelSerializer):
 
 
 class ProblemSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Problem
+        fields = '__all__'
+
+
+class ProblemContentSerializer(serializers.ModelSerializer):
     keyword = KeywordSerializer(many=True, read_only=True)
     skill = SkillSerializer(many=True, read_only=True)
     action_plan = ActionPlanSerializer(many=True, read_only=True)
     ressources = RessourceSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Problem
+        model = ProblemContent
         fields = '__all__'
 
 

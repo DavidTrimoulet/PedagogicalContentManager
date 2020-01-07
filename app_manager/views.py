@@ -180,22 +180,22 @@ class SkillRubricksView(generics.ListAPIView):
 
 class ProblemsView(generics.ListAPIView):
     queryset = Problem.objects.all()
-    serializer_class = ProblemSerializer
 
     def get(self, request, *args, **kwargs):
-        return Response(data=self.serializer_class(self.queryset.all(), many=True).data, status=status.HTTP_200_OK)
+        return Response(data=ProblemSerializer(self.queryset.all(), many=True).data, status=status.HTTP_200_OK)
 
     def put(self, request, *args, **kwargs):
         pass
 
     def post(self, request, *args, **kwargs):
         try:
-            problem = Problem.objects.get(title=request.data['title'])
-            return Response(self.serializer_class(problem).data)
+            problem_content, created = ProblemContent.objects.get_or_create(problem=Problem.objects.get(title=request.data['problem']))
+            print(problem_content)
+            return Response(data=ProblemContentSerializer(problem_content).data , status=status.HTTP_201_CREATED)
         except ObjectDoesNotExist:
             return Response(
                 data={
-                    "message": "Problem with title \"{}\" does not exist".format(kwargs["title"])
+                    "message": "Problem with title \"{}\" does not exist".format(request.data["problem"])
                 },
                 status=status.HTTP_404_NOT_FOUND
             )

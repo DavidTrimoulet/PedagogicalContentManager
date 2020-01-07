@@ -18,23 +18,25 @@
         </md-not-found>
     </md-autocomplete>
     <form enctype="multipart/form-data" method="POST">
-        <textarea ui-tinymce="tinymceOptions" ng-model="problem.title" ng-change="update()"></textarea>
-        <textarea ui-tinymce="tinymceOptions" ng-model="problem.text" ng-change="update()"></textarea>
+        <h2>Title</h2>
+        <textarea ui-tinymce="tinymceOptions" ng-model="problemContent.title" ng-change="update()"></textarea>
+        <h2>Text</h2>
+        <textarea ui-tinymce="tinymceOptions" ng-model="problemContent.text" ng-change="update()"></textarea>
         <h2>Keywords</h2>
-        <!-- <div ng-repeat="keyword in problem.keyword" class="inline-group">
+        <div ng-repeat="keyword in problemContent.keyword" class="inline-group">
             <label>{{ keyword.keyword }} : </label>
             <label>{{ keyword.definition }}</label>
             <img class="fit-picture" src="{{ keyword.definition_schema }}">
         </div>
         <h2>Compétences</h2>
-        <div ng-repeat="skill in problem.skill" class="inline-group">
+        <div ng-repeat="skill in problemContent.skill" class="inline-group">
             <label>{{ skill.taxonomy.verb }}</label>
             <label>{{ skill.text }}</label>
         </div>
         <h2>Plan d'action</h2>
-        <div ng-repeat="step in problem.action_plan" class="inline-group">
+        <div ng-repeat="step in problemContent.action_plan" class="inline-group">
             <label>{{ step.action_plan_steps }}</label>
-        </div> -->
+        </div>
     </form>
 
 </div>

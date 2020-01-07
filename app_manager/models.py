@@ -116,11 +116,16 @@ class Workshop(models.Model):
 
 class Problem(models.Model):
     title = models.CharField(max_length=256)
-    text = models.CharField(max_length=1024)
+
+
+class ProblemContent(models.Model):
+    problem = models.ForeignKey(Problem, on_delete='cascade', null=True)
+    problem_text = models.CharField(max_length=1024)
     keyword = models.ManyToManyField(KeyWord)
     skill = models.ManyToManyField(Skill)
     action_plan = models.ManyToManyField(ActionPlan)
     resources = models.ManyToManyField(Resource)
+
 
 class Version(models.Model):
     problem = models.ForeignKey(Problem, on_delete='cascade', null=True)
@@ -129,10 +134,12 @@ class Version(models.Model):
     author = models.OneToOneField(User, on_delete='cascade', null=True)
     pub_date = models.DateTimeField('date published')
 
+
 class Solution(models.Model):
     problem = models.ForeignKey(Problem, on_delete='cascade', null=True)
     text = models.CharField(max_length=1024)
     image = models.CharField(max_length=256)
+
 
 class ValidationQuestion(models.Model):
     problem = models.ForeignKey(Problem, on_delete='cascade', null=True)
@@ -140,15 +147,18 @@ class ValidationQuestion(models.Model):
     answer = models.CharField(max_length=1024)
     answer_schema = models.CharField(max_length=256)
 
+
 class Hypothesis(models.Model):
     problem = models.ForeignKey(Problem, on_delete='cascade', null=True)
     text = models.CharField(max_length=1024)
     answer = models.CharField(max_length=1024)
     answer_image = models.CharField(max_length=256)
 
+
 class HintAndAdvise(models.Model):
     problem = models.ForeignKey(Problem, on_delete='cascade', null=True)
     text = models.CharField(max_length=1024)
+
 
 class Project(models.Model):
     project_text = models.CharField(max_length=1024)
@@ -156,6 +166,7 @@ class Project(models.Model):
     project_resources = models.ManyToManyField(Resource)
     project_milestones = models.ManyToManyField(Milestone)
     project_versions = models.ManyToManyField(Version)
+
 
 class Post(models.Model):
     title = models.TextField()

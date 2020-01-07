@@ -34,7 +34,20 @@ function ProblemAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
     self.isDisabled = false;
 
     self.problems = [];
-
+    self.problemContent = [];
+    self.getProblemContent = function () {
+        $http({
+            method: 'POST',
+            url: 'http://127.0.0.1:8000/api/v1/problems/',
+            data: { 'problem': self.selectedItem.title }
+        }).then(function successCallback(response) {
+            $log.info("getting problem content");
+            self.problemContent = response.data;
+        }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with a'autocomplete.skill'n error status.
+        });
+    }
     self.querySearch = querySearch;
     self.selectedItemChange = selectedItemChange;
     self.update = update;
@@ -57,8 +70,7 @@ function ProblemAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
 
     function selectedItemChange(item) {
         self.selectedItem = item;
-        $log.info(item);
-        $scope.problem = item;
+        self.getProblemContent();
     }
 
     function findTitle(query) {
