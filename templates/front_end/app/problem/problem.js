@@ -41,7 +41,7 @@ angular.module('myApp.problem', ['ngRoute', 'ui.tinymce'])
             $http({
                 method: 'PUT',
                 url: 'http://127.0.0.1:8000/api/v1/problems/',
-                data: $scope.problemContent.text
+                data: {'title': $scope.title }
             }).then(function successCallback(response) {
                 $log.info("getting problem content");
                 $scope.problemContent = response.data;
@@ -55,7 +55,7 @@ angular.module('myApp.problem', ['ngRoute', 'ui.tinymce'])
             $http({
                 method: 'PUT',
                 url: 'http://127.0.0.1:8000/api/v1/problems/',
-                data: $scope.problemContent.title
+                data: {'text': $scope.text }
             }).then(function successCallback(response) {
                 $log.info("getting problem content");
                 $scope.problemContent = response.data;
