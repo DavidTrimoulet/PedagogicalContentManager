@@ -12,53 +12,74 @@ angular.module('myApp.problem', ['ngRoute', 'ui.tinymce'])
     }])
 
     .controller('ProblemCtrl', function ($scope, $http, $log) {
-        $scope.title = "";
-        $scope.text = "";
+        $scope.selectedProblem = {};
         $scope.tinymceOptions = {
-            plugins: 'link image code',
+            plugins: 'link image code autoresize',
             toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
+            images_upload_handler: function (blobInfo, success, failure) {
+                $log.info("blob", blobInfo.blob());
+                //var dataToSend = { 'filename':blobInfo.blob().name };
+                var formData = new FormData();
+                formData.append('image', blobInfo.blob(), blobInfo.blob().name );
+                $log.info(formData);
+                $http({
+                    method: 'POST',
+                    url: 'http://127.0.0.1:8000/api/v1/uploadImage/',
+                    transformRequest: angular.identity,
+                    headers: {
+                        'Content-Type': undefined
+                    },
+                    data: formData
+                }).then(function successCallback(response) {
+                    success( response.data['url'] );
+                }, function errorCallback(response) {
+                    failure();
+                    // called asynchronously if an error occurs
+                    // or server returns response with a'autocomplete.skill'n error status.
+                });
+            }
 
         };
         $scope.update = function ($http, $scope) {
 
         };
-        $scope.getProblemContent = function (title) {
-            $log.info("getting data for " + title);
+        $scope.getProblemContent = function (problem) {
+            $log.info("getting data for " + problem.title);
             $http({
                 method: 'POST',
                 url: 'http://127.0.0.1:8000/api/v1/problems/',
-                data: {'problem': title}
+                data: {'problem': problem.title}
             }).then(function successCallback(response) {
                 $log.info("getting problem content");
+                $log.info(response.data);
+                $scope.selectedProblem = problem;
                 $scope.problemContent = response.data;
             }, function errorCallback(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with a'autocomplete.skill'n error status.
             });
         };
+
         $scope.updateProblemContent = function () {
-            $log.info("updating content");
             $http({
                 method: 'PUT',
                 url: 'http://127.0.0.1:8000/api/v1/problems/',
-                data: {'title': $scope.title }
+                data:  $scope.problemContent
             }).then(function successCallback(response) {
-                $log.info("getting problem content");
-                $scope.problemContent = response.data;
+
             }, function errorCallback(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with a'autocomplete.skill'n error status.
             });
         };
+
         $scope.updateProblemTitle = function () {
-            $log.info("updating Title");
             $http({
                 method: 'PUT',
                 url: 'http://127.0.0.1:8000/api/v1/problems/',
-                data: {'text': $scope.text }
+                data: $scope.selectedProblem
             }).then(function successCallback(response) {
-                $log.info("getting problem content");
-                $scope.problemContent = response.data;
+
             }, function errorCallback(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with a'autocomplete.skill'n error status.
@@ -76,7 +97,6 @@ function ProblemAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
     self.isDisabled = false;
 
     self.problems = [];
-    self.problemContent = [];
     self.querySearch = querySearch;
     self.selectedItemChange = selectedItemChange;
     self.update = update;
@@ -99,7 +119,8 @@ function ProblemAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
 
     function selectedItemChange(item) {
         self.selectedItem = item;
-        $scope.getProblemContent(item.title);
+        $scope.selectedProblem = item;
+        $scope.getProblemContent(item);
     }
 
     function findTitle(query) {

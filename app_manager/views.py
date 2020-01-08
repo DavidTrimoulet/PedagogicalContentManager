@@ -185,7 +185,14 @@ class ProblemsView(generics.ListAPIView):
         return Response(data=ProblemSerializer(self.queryset.all(), many=True).data, status=status.HTTP_200_OK)
 
     def put(self, request, *args, **kwargs):
-        pass
+        print(request.data)
+        if 'title' in request.data.keys():
+            print('title')
+        else:
+            problem_content = ProblemContent.objects.get(pk=request.data['id'])
+            problem_content.problem_text=request.data['problem_text']
+            problem_content.save()
+        return Response(data='', status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         try:
