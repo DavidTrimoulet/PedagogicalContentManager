@@ -20,7 +20,7 @@ angular.module('myApp.problem', ['ngRoute', 'ui.tinymce'])
                 $log.info("blob", blobInfo.blob());
                 //var dataToSend = { 'filename':blobInfo.blob().name };
                 var formData = new FormData();
-                formData.append('image', blobInfo.blob(), blobInfo.blob().name );
+                formData.append('image', blobInfo.blob(), blobInfo.blob().name);
                 $log.info(formData);
                 $http({
                     method: 'POST',
@@ -31,7 +31,7 @@ angular.module('myApp.problem', ['ngRoute', 'ui.tinymce'])
                     },
                     data: formData
                 }).then(function successCallback(response) {
-                    success( response.data['url'] );
+                    success(response.data['url']);
                 }, function errorCallback(response) {
                     failure();
                     // called asynchronously if an error occurs
@@ -64,7 +64,7 @@ angular.module('myApp.problem', ['ngRoute', 'ui.tinymce'])
             $http({
                 method: 'PUT',
                 url: 'http://127.0.0.1:8000/api/v1/problems/',
-                data:  $scope.problemContent
+                data: $scope.problemContent
             }).then(function successCallback(response) {
 
             }, function errorCallback(response) {
@@ -95,43 +95,43 @@ function ProblemAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
     var self = this;
     self.simulateQuery = false;
     self.isDisabled = false;
-
+    self.noCache = true;
     self.problems = [];
     self.querySearch = querySearch;
     self.selectedItemChange = selectedItemChange;
-    self.update = update;
-
-
-    $http({
-        method: 'GET',
-        url: 'http://127.0.0.1:8000/api/v1/problems/'
-    }).then(function successCallback(response) {
-        self.problems = response.data;
-    }, function errorCallback(response) {
-        // called asynchronously if an error occurs
-        // or server returns response with a'autocomplete.skill'n error status.
-    });
-
+    self.update = function () {
+        $http({
+            method: 'GET',
+            url: 'http://127.0.0.1:8000/api/v1/problems/'
+        }).then(function successCallback(response) {
+            self.problems = response.data;
+        }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with a'autocomplete.skill'n error status.
+        });
+    }
+    self.update();
 
     function querySearch(query) {
+        self.update();
         return findTitle(query);
     }
 
     function selectedItemChange(item) {
-        self.selectedItem = item;
-        $scope.selectedProblem = item;
-        $scope.getProblemContent(item);
+        if (!angular.isUndefined(item)) {
+            self.selectedItem = item;
+            $scope.selectedProblem = item;
+            $scope.getProblemContent(item);
+        }
     }
 
     function findTitle(query) {
-        $log.info("problems:", self.problems);
         return self.problems.filter(function (item) {
             return item.title.includes(query);
         });
     }
 
     function update() {
-
 
     }
 }

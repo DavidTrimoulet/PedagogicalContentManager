@@ -35,9 +35,9 @@ class BaseViewTest(APITestCase):
         Skill.objects.create(taxonomy=taxonomy, text=text)
 
     @staticmethod
-    def create_skill_rubricks(verb="", text="", level_A="", level_B="",level_C="",level_D=""):
+    def create_skill_rubricks(verb="", text="", level_a="", level_b="",level_c="",level_d=""):
         skill = Skill.objects.get(taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=verb)), text=text)
-        SkillRubricks.objects.create(skill=skill, level_A=level_A, level_B=level_B, level_C=level_C, level_D=level_D)
+        SkillRubricks.objects.create(skill=skill, level_a=level_a, level_b=level_b, level_c=level_c, level_d=level_d)
 
     @classmethod
     def setUpClass(cls):
@@ -56,10 +56,10 @@ class BaseViewTest(APITestCase):
         cls.create_skill(verb="Explain", text="elementary embedded systems")
         cls.create_skill(verb="Describe", text="electronic elementary component behaviour")
         cls.create_skill_rubricks(verb="Explain", text="elementary embedded systems",
-                                  level_A="Can explain what are ALU, Register, Memory and IO",
-                                  level_B="Can explain what are ALU, Register and Memory",
-                                  level_C="Can explain what are ALU and Register",
-                                  level_D="Can explain what is ALU")
+                                  level_a="Can explain what are ALU, Register, Memory and IO",
+                                  level_b="Can explain what are ALU, Register and Memory",
+                                  level_c="Can explain what are ALU and Register",
+                                  level_d="Can explain what is ALU")
 
     @classmethod
     def tearDownClass(cls):
@@ -253,10 +253,10 @@ class AppManagerTest(BaseViewTest):
             reverse('skill_rubricks-all', kwargs={"version": "v1"}),
                                           data=json.dumps({"verb":"Describe",
                                                            "text":"electronic elementary component behaviour",
-                                                           "level_A": "Can explain Resistance, Impedance, Inductance and Capacitance",
-                                                           "level_B": "Can explain Resistance, Impedance and Inductance",
-                                                           "level_C": "Can explain Resistance and Impedance",
-                                                           "level_D": "Can explain Resistance" }),
+                                                           "level_a": "Can explain Resistance, Impedance, Inductance and Capacitance",
+                                                           "level_b": "Can explain Resistance, Impedance and Inductance",
+                                                           "level_c": "Can explain Resistance and Impedance",
+                                                           "level_d": "Can explain Resistance" }),
                                           content_type='application/json')
         expected = SkillRubricks.objects.last()
         self.assertEqual(response.data["skill"]["taxonomy"],  BloomTaxonomySerializer(expected.skill.taxonomy).data)

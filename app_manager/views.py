@@ -3,12 +3,11 @@ from django.http import HttpResponse
 from rest_framework.views import status
 from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
-
+import re
 from rest_framework import generics
 from .models import *
 from .serializers import *
 from rest_framework.response import Response
-
 
 class BloomVerbView(generics.ListAPIView):
     queryset = BloomVerb.objects.all()
@@ -153,10 +152,10 @@ class SkillRubricksView(generics.ListAPIView):
             taxonomy=BloomTaxonomy.objects.get(verb=BloomVerb.objects.get(verb=request.data["verb"])),
             text=request.data["text"])
         skill_rubricks, created = SkillRubricks.objects.get_or_create(skill=skill)
-        skill_rubricks.level_A = request.data["level_A"]
-        skill_rubricks.level_B = request.data["level_B"]
-        skill_rubricks.level_C = request.data["level_C"]
-        skill_rubricks.level_D = request.data["level_D"]
+        skill_rubricks.level_A = request.data["level_a"]
+        skill_rubricks.level_B = request.data["level_b"]
+        skill_rubricks.level_C = request.data["level_c"]
+        skill_rubricks.level_D = request.data["level_d"]
         skill_rubricks.save()
         if created:
             return Response(data=SkillRubricksSerializer(skill_rubricks).data, status=status.HTTP_201_CREATED)
@@ -187,7 +186,9 @@ class ProblemsView(generics.ListAPIView):
     def put(self, request, *args, **kwargs):
         print(request.data)
         if 'title' in request.data.keys():
-            print('title')
+            cleanr = re.compile('<.*?>')
+            title = re.sub(cleanr, '', request.data['title'])
+            self.queryset.filter(pk=request.data['id']).update(title=title)
         else:
             problem_content = ProblemContent.objects.get(pk=request.data['id'])
             problem_content.problem_text=request.data['problem_text']
