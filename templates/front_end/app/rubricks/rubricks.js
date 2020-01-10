@@ -19,7 +19,6 @@ angular.module('myApp.rubricks', ['ngRoute'])
             }).then(function successCallback(response) {
                 var rubricks = response.data;
                 $scope.rubricks = rubricks.map(getItemKeyValue);
-                console.log("scope.rubricks :", $scope.rubricks);
             }, function errorCallback(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
@@ -43,7 +42,7 @@ angular.module('autocomplete.skill', ['ngMaterial'])
 
 function SkillAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
     var self = this;
-    self.rubricks = {'Level_A': '', 'Level_B': '', 'Level_C': '', 'Level_D': '',};
+    self.rubricks = {'Level_a': '', 'Level_b': '', 'Level_c': '', 'Level_d': '',};
     self.simulateQuery = false;
     self.isDisabled = false;
     self.added = "";
@@ -78,10 +77,10 @@ function SkillAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
                     'key': item.key,
                     'value': {
                         'skill': {'taxonomy': item.value.taxonomy, 'text': item.value.text},
-                        'level_A': '',
-                        'level_B': '',
-                        'level_C': '',
-                        'level_D': ''
+                        'level_a': '',
+                        'level_b': '',
+                        'level_c': '',
+                        'level_d': ''
                     }
                 };
                 $scope.rubricks.push(self.selectedItem);
@@ -108,14 +107,13 @@ function SkillAutocompleteCtrl($timeout, $q, $log, $scope, $http) {
             });
             //$log.info("rubricks cleaned :", $scope.rubricks);
             $scope.rubricks.forEach(function (item) {
-                console.log(item);
                 var rubricksToPut = {
                     "verb": item.value.skill.taxonomy.verb,
                     "text": item.value.skill.text,
-                    "level_A": item.value.level_A,
-                    "level_B": item.value.level_B,
-                    "level_C": item.value.level_C,
-                    "level_D": item.value.level_D
+                    "level_a": item.value.level_A,
+                    "level_b": item.value.level_B,
+                    "level_c": item.value.level_C,
+                    "level_d": item.value.level_D
                 };
                 //$log.info(rubricksToPut);
                 $http({
