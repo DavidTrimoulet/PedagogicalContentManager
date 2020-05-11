@@ -12,7 +12,7 @@
     "angular-ui-tinymce": "0.0.19",
     "html5-boilerplate": "0.0.1",
     "npm": "^6.13.4",
-    "tinymce": "^5.1.2"
+    "tinymce": "^5.2.2"
   },
   "devDependencies": {
     "angular-mocks": "^1.7.5",
